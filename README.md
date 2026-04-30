@@ -86,3 +86,10 @@ Pour une production réelle, ajoutez impérativement :
 - Carte d’identité plus premium
 - Navigation plus lisible et cohérente
 - Bouton actif clair et lisible
+
+
+## V16
+- Retour à une barre latérale gauche
+- Suppression de la topbar haute
+- Navigation entièrement déplacée dans la sidebar
+- Carte de statut et dossier actif dans la sidebar

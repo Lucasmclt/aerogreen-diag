@@ -1,13 +1,6 @@
 import streamlit as st
 
-from services.calculations import get_fit_result, get_grade
-
-
-PUBLIC_PAGES = [
-    ("Accueil", "Accueil"),
-    ("Test rapide", "Test rapide"),
-]
-
+PUBLIC_PAGES = [("Accueil", "Accueil"), ("Test rapide", "Test rapide")]
 PRIVATE_PAGES = [
     ("Dashboard", "Dashboard"),
     ("Diagnostic avancé", "Diagnostic avancé"),
@@ -15,90 +8,82 @@ PRIVATE_PAGES = [
     ("Rapport", "Rapport"),
 ]
 
-
-def nav_button(label: str, page: str):
-    active = st.session_state.page == page
-    active_class = "active" if active else ""
-
-    st.markdown(f"<div class='nav-button-wrap {active_class}'>", unsafe_allow_html=True)
-    if st.button(label, key=f"nav_{page}", use_container_width=True):
-        st.session_state.page = page
-        st.rerun()
-    st.markdown("</div>", unsafe_allow_html=True)
-
+def _go(page: str):
+    st.session_state.page = page
+    st.query_params["page"] = page
+    st.rerun()
 
 def render_sidebar():
     with st.sidebar:
         st.markdown("""
-        <div class='sidebar-brand compact'>
-            <div class='brand-mark'>✈️</div>
-            <div>
-                <div class='sidebar-brand-title'>AeroGreen</div>
-                <div class='sidebar-brand-sub'>Pré-audit carbone numérique</div>
+        <div class="v16-sidebar-shell">
+            <div class="v16-sidebar-brand">
+                <div class="v16-sidebar-logo">✈️</div>
+                <div>
+                    <div class="v16-sidebar-title">AeroGreen</div>
+                    <div class="v16-sidebar-sub">Pré-audit carbone numérique</div>
+                </div>
             </div>
         </div>
         """, unsafe_allow_html=True)
 
         if st.session_state.authenticated:
             st.markdown(
-                f"<div class='sidebar-mini-status success-dot'>Connecté · {st.session_state.user_email}</div>",
+                f"""
+                <div class="v16-sidebar-status-card">
+                    <div class="v16-status-label">Compte</div>
+                    <div class="v16-status-value">{st.session_state.user_email}</div>
+                    <div class="v16-status-chip success">Espace professionnel</div>
+                </div>
+                """,
                 unsafe_allow_html=True
             )
-            if st.button("Déconnexion", key="logout_btn", use_container_width=True):
+        else:
+            st.markdown(
+                """
+                <div class="v16-sidebar-status-card">
+                    <div class="v16-status-label">Mode</div>
+                    <div class="v16-status-value">Découverte</div>
+                    <div class="v16-status-chip">Accès gratuit</div>
+                </div>
+                """,
+                unsafe_allow_html=True
+            )
+
+        st.markdown("<div class='v16-nav-group-label'>Navigation</div>", unsafe_allow_html=True)
+        for label, page in PUBLIC_PAGES:
+            active = st.session_state.page == page
+            if st.button(label, key=f"v16_nav_public_{page}", use_container_width=True, type="primary" if active else "secondary"):
+                _go(page)
+
+        st.markdown("<div class='v16-nav-group-label'>Espace professionnel</div>", unsafe_allow_html=True)
+        if st.session_state.authenticated:
+            for label, page in PRIVATE_PAGES:
+                active = st.session_state.page == page
+                if st.button(label, key=f"v16_nav_private_{page}", use_container_width=True, type="primary" if active else "secondary"):
+                    _go(page)
+            if st.button("Déconnexion", key="v16_logout", use_container_width=True):
                 st.session_state.authenticated = False
                 st.session_state.user_id = None
                 st.session_state.user_email = ""
                 st.session_state.page = "Accueil"
+                st.query_params.clear()
+                st.query_params["page"] = "Accueil"
                 st.rerun()
         else:
-            st.markdown("<div class='sidebar-mini-status'>Mode invité</div>", unsafe_allow_html=True)
-            if st.button("Connexion professionnelle", key="login_nav_btn", use_container_width=True):
-                st.session_state.page = "Connexion"
-                st.rerun()
-
-        st.markdown("<div class='sidebar-section-label'>Navigation</div>", unsafe_allow_html=True)
-        for label, page in PUBLIC_PAGES:
-            nav_button(label, page)
-
-        st.markdown("<div class='sidebar-section-label'>Espace professionnel</div>", unsafe_allow_html=True)
-        if st.session_state.authenticated:
-            for label, page in PRIVATE_PAGES:
-                nav_button(label, page)
-        else:
-            st.markdown(
-                "<div class='sidebar-locked'>Connectez-vous pour accéder au diagnostic complet, au dashboard et au rapport.</div>",
-                unsafe_allow_html=True
-            )
+            st.caption("Connectez-vous pour accéder au diagnostic avancé, au dashboard et aux rapports.")
+            active = st.session_state.page == "Connexion"
+            if st.button("Connexion", key="v16_nav_login", use_container_width=True, type="primary" if active else "secondary"):
+                _go("Connexion")
 
         if st.session_state.workspace_created:
-            st.markdown(f"""
-            <div class='sidebar-workspace'>
-                <div class='section-title'>Dossier actif</div>
-                <div class='feature-title' style='margin-bottom:2px;'>{st.session_state.company_name}</div>
-                <div class='feature-text small'>{st.session_state.company_city}</div>
-            </div>
-            """, unsafe_allow_html=True)
-
-        if st.session_state.fit_test_done or (st.session_state.diagnostic_done and st.session_state.diagnostic_result):
-            st.markdown("<div class='sidebar-section-label'>Résultats</div>", unsafe_allow_html=True)
-
-        if st.session_state.fit_test_done:
-            result_label, result_color = get_fit_result(st.session_state.fit_score)
-            st.markdown(f"""
-            <div class='sidebar-result-card'>
-                <span>Test rapide</span>
-                <strong style='color:{result_color};'>{st.session_state.fit_score:.0f}%</strong>
-                <small>{result_label}</small>
-            </div>
-            """, unsafe_allow_html=True)
-
-        if st.session_state.diagnostic_done and st.session_state.diagnostic_result:
-            score = st.session_state.diagnostic_result["global_score"]
-            grade, color = get_grade(score)
-            st.markdown(f"""
-            <div class='sidebar-result-card'>
-                <span>Diagnostic</span>
-                <strong style='color:{color};'>{grade} · {score:.0f}/100</strong>
-                <small>{st.session_state.diagnostic_result['risk_label']}</small>
-            </div>
-            """, unsafe_allow_html=True)
+            st.markdown(
+                f"""
+                <div class="v16-sidebar-workspace">
+                    <div class="v16-status-label">Dossier actif</div>
+                    <div class="v16-status-value">{st.session_state.company_name}</div>
+                    <div class="v16-sidebar-sub">{st.session_state.company_city}</div>
+                </div>
+                """,
+                unsafe_allow_html=True
+            )
