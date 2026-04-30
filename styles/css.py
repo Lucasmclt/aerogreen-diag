@@ -1440,5 +1440,66 @@ def load_css():
         }
     }
 
+    
+    /* V13 NATIVE TOPBAR */
+    .native-topbar-shell {
+        background: linear-gradient(180deg, rgba(255,255,255,.92), rgba(248,250,252,.98));
+        border: 1px solid var(--line);
+        border-radius: 26px;
+        padding: 18px;
+        box-shadow: 0 12px 28px rgba(15,23,42,0.05);
+        margin-bottom: .95rem;
+    }
+
+    .native-brand-row {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+    }
+
+    .native-status-wrap {
+        display: flex;
+        justify-content: flex-end;
+        align-items: center;
+        height: 100%;
+    }
+
+    .native-topbar-shell .stButton {
+        margin-top: .15rem;
+    }
+
+    .native-topbar-shell .stButton button {
+        border-radius: 999px !important;
+        padding: 0.76rem 1.12rem !important;
+        font-weight: 800 !important;
+        width: 100% !important;
+        box-shadow: 0 8px 22px rgba(15,23,42,.04) !important;
+    }
+
+    .native-topbar-shell .stButton button[kind="secondary"] {
+        border: 1px solid rgba(99,102,241,.18) !important;
+        background: rgba(99,102,241,.08) !important;
+        color: #4f46e5 !important;
+    }
+
+    .native-topbar-shell .stButton button[kind="primary"] {
+        background: #0b1534 !important;
+        color: white !important;
+        border: 1px solid #0b1534 !important;
+        box-shadow: 0 16px 30px rgba(11,21,52,.16) !important;
+    }
+
+    .native-topbar-shell .stButton button[kind="primary"] p,
+    .native-topbar-shell .stButton button[kind="primary"] span {
+        color: white !important;
+    }
+
+    @media (max-width: 980px) {
+        .native-status-wrap {
+            justify-content: flex-start;
+            margin-top: .5rem;
+        }
+    }
+
     </style>
     """, unsafe_allow_html=True)

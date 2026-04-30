@@ -69,3 +69,8 @@ Pour une production réelle, ajoutez impérativement :
 ## V12
 - Correction du bug d’affichage HTML dans la topbar
 - Navigation topbar rendue proprement via HTML dédenté
+
+
+## V13
+- Topbar réécrite en composants Streamlit natifs
+- Suppression du risque d’affichage des balises HTML en texte brut
