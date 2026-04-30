@@ -2,6 +2,7 @@ import streamlit as st
 
 from styles.css import load_css
 from components.sidebar import render_sidebar
+from components.topbar import render_topbar
 from pages_app.home import render_home
 from pages_app.fit_test import render_fit_test
 from pages_app.diagnostic_wizard import render_diagnostic_wizard
@@ -54,6 +55,7 @@ def main():
     init_session_state()
     load_css()
     render_sidebar()
+    render_topbar()
 
     page = st.session_state.page
 

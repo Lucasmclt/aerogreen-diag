@@ -136,6 +136,87 @@ def load_css():
         color: var(--text) !important;
     }
 
+
+
+    /* TOPBAR */
+    .topbar-shell {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 18px;
+        background: linear-gradient(180deg, rgba(255,255,255,.92), rgba(248,250,252,.98));
+        border: 1px solid var(--line);
+        border-radius: 22px;
+        padding: 18px 22px;
+        box-shadow: 0 12px 28px rgba(15,23,42,0.05);
+        margin-bottom: 1rem;
+        animation: fadeIn .28s ease-in;
+    }
+
+    .topbar-breadcrumb {
+        color: var(--muted);
+        font-size: .82rem;
+        font-weight: 700;
+        letter-spacing: .02em;
+        margin-bottom: 4px;
+    }
+
+    .topbar-breadcrumb span {
+        color: #cbd5e1;
+        margin: 0 5px;
+    }
+
+    .topbar-title-row {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        flex-wrap: wrap;
+    }
+
+    .topbar-title {
+        font-size: 1.2rem;
+        font-weight: 900;
+        color: var(--text);
+        letter-spacing: -0.03em;
+    }
+
+    .topbar-right {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        flex-wrap: wrap;
+        justify-content: flex-end;
+    }
+
+    .topbar-chip {
+        display: inline-flex;
+        align-items: center;
+        padding: 8px 12px;
+        border-radius: 999px;
+        font-size: .8rem;
+        font-weight: 800;
+        border: 1px solid transparent;
+        white-space: nowrap;
+    }
+
+    .topbar-chip.success {
+        background: rgba(16,185,129,.10);
+        color: #047857;
+        border-color: rgba(16,185,129,.18);
+    }
+
+    .topbar-chip.warning {
+        background: rgba(245,158,11,.12);
+        color: #b45309;
+        border-color: rgba(245,158,11,.18);
+    }
+
+    .topbar-chip.neutral {
+        background: rgba(99,102,241,.10);
+        color: #4f46e5;
+        border-color: rgba(99,102,241,.18);
+    }
+
     /* HERO + PAGE INTRO */
     .hero {
         background:
@@ -368,6 +449,18 @@ def load_css():
         height: 1px;
         background: var(--line);
         margin: 1.4rem 0;
+    }
+
+
+    @media (max-width: 980px) {
+        .topbar-shell {
+            flex-direction: column;
+            align-items: flex-start;
+        }
+
+        .topbar-right {
+            justify-content: flex-start;
+        }
     }
 
     /* ANIMATION */

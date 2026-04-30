@@ -11,7 +11,7 @@ def render_sidebar():
         st.markdown("""
         <div class='sidebar-brand'>
             <div class='sidebar-brand-title'>✈️ AeroGreen</div>
-            <div class='sidebar-brand-sub'>Plateforme de pré-audit carbone numérique pour les sous-traitants aéronautiques.</div>
+            <div class='sidebar-brand-sub'>Pré-audit carbone numérique B2B pour les sous-traitants aéronautiques.</div>
         </div>
         """, unsafe_allow_html=True)
 
@@ -60,3 +60,13 @@ def render_sidebar():
             """, unsafe_allow_html=True)
         elif not st.session_state.fit_test_done:
             st.caption("Commence par le test rapide pour lancer le parcours complet.")
+
+        st.markdown("""
+        <div class='card-soft sidebar-process' style='margin-top:.8rem;'>
+            <div class='section-title'>Workflow</div>
+            <div class='feature-text small'>1. Workspace</div>
+            <div class='feature-text small'>2. Qualification</div>
+            <div class='feature-text small'>3. Diagnostic</div>
+            <div class='feature-text small'>4. Score & rapport</div>
+        </div>
+        """, unsafe_allow_html=True)
