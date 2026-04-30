@@ -76,3 +76,66 @@ def render_recommendation_card(priority: str, title: str, text: str):
         <div class='feature-text'>{text}</div>
     </div>
     """, unsafe_allow_html=True)
+
+
+def render_icon_card(icon: str, title: str, text: str, accent: str = "#6366f1"):
+    st.markdown(f"""
+    <div class='icon-card'>
+        <div class='icon-bubble' style='background:{accent}18; color:{accent};'>{icon}</div>
+        <div class='feature-title'>{title}</div>
+        <div class='feature-text'>{text}</div>
+    </div>
+    """, unsafe_allow_html=True)
+
+
+def render_process_timeline():
+    st.markdown("""
+    <div class='timeline'>
+        <div class='timeline-step'>
+            <div class='timeline-dot'>1</div>
+            <div>
+                <strong>Test rapide</strong>
+                <p>Qualification immédiate sans compte.</p>
+            </div>
+        </div>
+        <div class='timeline-line'></div>
+        <div class='timeline-step'>
+            <div class='timeline-dot'>2</div>
+            <div>
+                <strong>Espace professionnel</strong>
+                <p>Connexion pour créer un dossier et enregistrer les audits.</p>
+            </div>
+        </div>
+        <div class='timeline-line'></div>
+        <div class='timeline-step'>
+            <div class='timeline-dot'>3</div>
+            <div>
+                <strong>Diagnostic avancé</strong>
+                <p>Collecte guidée : matériel, PLM, cloud, gouvernance et achats IT.</p>
+            </div>
+        </div>
+        <div class='timeline-line'></div>
+        <div class='timeline-step'>
+            <div class='timeline-dot'>4</div>
+            <div>
+                <strong>Rapport</strong>
+                <p>Score, recommandations et PDF premium.</p>
+            </div>
+        </div>
+    </div>
+    """, unsafe_allow_html=True)
+
+
+def render_upgrade_panel():
+    st.markdown("""
+    <div class='upgrade-panel'>
+        <div>
+            <div class='section-title' style='color:#cbd5e1;'>Espace professionnel</div>
+            <h3>Déverrouillez le diagnostic complet</h3>
+            <p>
+                Accédez au questionnaire avancé, à l’historique des audits, au dashboard exécutif
+                et au rapport PDF premium.
+            </p>
+        </div>
+    </div>
+    """, unsafe_allow_html=True)

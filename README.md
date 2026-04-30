@@ -29,3 +29,12 @@ Pour une production réelle, ajoutez impérativement :
 - chiffrement au repos si données sensibles
 - logs d’audit
 - déploiement derrière un serveur sécurisé
+
+
+## V6
+- Landing client ultra premium
+- Sidebar simplifiée
+- Cartes avec icônes
+- Timeline visuelle
+- Hero animé avec éléments flottants
+- Transition plus claire entre mode gratuit et professionnel
