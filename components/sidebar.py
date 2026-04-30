@@ -3,7 +3,7 @@ import streamlit as st
 from services.calculations import get_fit_result, get_grade
 
 
-PAGES = ["Accueil", "Test rapide", "Diagnostic avancé", "Score", "Rapport"]
+PAGES = ["Accueil", "Dashboard", "Test rapide", "Diagnostic avancé", "Score", "Rapport"]
 
 
 def render_sidebar():

@@ -4,6 +4,7 @@ from styles.css import load_css
 from components.sidebar import render_sidebar
 from components.topbar import render_topbar
 from pages_app.home import render_home
+from pages_app.dashboard import render_dashboard
 from pages_app.fit_test import render_fit_test
 from pages_app.diagnostic_wizard import render_diagnostic_wizard
 from pages_app.score import render_score
@@ -21,6 +22,7 @@ st.set_page_config(
 def init_session_state():
     defaults = {
         "page": "Accueil",
+        "audit_history": [],
 
         # SaaS workspace
         "workspace_created": False,
@@ -61,6 +63,8 @@ def main():
 
     if page == "Accueil":
         render_home()
+    elif page == "Dashboard":
+        render_dashboard()
     elif page == "Test rapide":
         render_fit_test()
     elif page == "Diagnostic avancé":

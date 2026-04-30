@@ -22,3 +22,10 @@ streamlit run app.py
 3. Diagnostic avancé multi-étapes
 4. Score global + graphes
 5. Rapport PDF premium
+
+
+## V3
+- landing page plus forte
+- dashboard exécutif
+- historique d'audits
+- posture plus jury / investisseur

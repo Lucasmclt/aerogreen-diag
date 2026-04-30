@@ -67,6 +67,22 @@ def render_score():
         with cols[index % len(cols)]:
             render_recommendation_card(reco["priority"], reco["title"], reco["text"])
 
-    if st.button("Générer le rapport"):
-        st.session_state.page = "Rapport"
-        st.rerun()
+    cta1, cta2 = st.columns(2)
+    with cta1:
+        if st.button("Enregistrer dans le dashboard"):
+            entry = {
+                "Entreprise": st.session_state.company_name or "Entreprise non renseignée",
+                "Ville": st.session_state.company_city or "N/A",
+                "Score": round(result["global_score"], 0),
+                "Grade": result["grade"],
+                "Empreinte": round(result["total_tonnes"], 2),
+                "Date": __import__("datetime").datetime.now().strftime("%Y-%m-%d"),
+            }
+            history = st.session_state.get("audit_history", [])
+            history.append(entry)
+            st.session_state.audit_history = history
+            st.success("Audit ajouté au dashboard exécutif.")
+    with cta2:
+        if st.button("Générer le rapport"):
+            st.session_state.page = "Rapport"
+            st.rerun()
