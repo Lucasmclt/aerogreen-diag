@@ -43,13 +43,13 @@ def render_home():
     </div>
     """, unsafe_allow_html=True)
 
-    cta_a, cta_b = st.columns([1, 1])
+    cta_l, cta_a, cta_b, cta_r = st.columns([1.2, 1, 1, 3])
     with cta_a:
-        if st.button("Lancer le test rapide gratuit", use_container_width=True):
+        if st.button("Test rapide gratuit"):
             st.session_state.page = "Test rapide"
             st.rerun()
     with cta_b:
-        if st.button("Accéder à l’espace professionnel", use_container_width=True):
+        if st.button("Espace professionnel"):
             st.session_state.page = "Connexion"
             st.rerun()
 

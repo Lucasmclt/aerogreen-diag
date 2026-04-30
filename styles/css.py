@@ -136,6 +136,24 @@ def load_css():
         color: var(--text) !important;
     }
 
+    [data-testid="stSidebar"] [data-baseweb="radio"] label {
+        padding-left: 0 !important;
+        margin-left: 0 !important;
+        gap: 0 !important;
+    }
+
+    [data-testid="stSidebar"] [data-baseweb="radio"] > div {
+        margin-left: 0 !important;
+        padding-left: 0 !important;
+    }
+
+    [data-testid="stSidebar"] [data-baseweb="radio"] p {
+        margin: 0 !important;
+        padding: 0 !important;
+        line-height: 1.2 !important;
+    }
+
+
 
 
     /* TOPBAR */
@@ -868,6 +886,43 @@ def load_css():
         margin: 4px 0;
     }
 
+
+    .uniform-card,
+    .icon-card {
+        min-height: 210px;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .metric-card {
+        min-height: 160px;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .uniform-soft-card {
+        min-height: 155px;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .pricing-card {
+        min-height: 255px;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .upgrade-panel {
+        min-height: 255px;
+    }
+
+    .recommendation-card {
+        min-height: 190px;
+        display: flex;
+        flex-direction: column;
+    }
+
+
     /* INPUTS */
     .stNumberInput input, .stTextInput input {
         border-radius: 12px !important;
@@ -893,18 +948,58 @@ def load_css():
     }
 
     /* BUTTONS */
+
+
+    .uniform-card,
+    .icon-card {
+        min-height: 210px;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .metric-card {
+        min-height: 160px;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .uniform-soft-card {
+        min-height: 155px;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .pricing-card {
+        min-height: 255px;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .upgrade-panel {
+        min-height: 255px;
+    }
+
+    .recommendation-card {
+        min-height: 190px;
+        display: flex;
+        flex-direction: column;
+    }
+
     .stButton button {
-        border-radius: 13px;
-        padding: 0.7rem 1rem;
+        border-radius: 999px;
+        padding: 0.72rem 1.08rem;
         font-weight: 800;
         transition: all .18s ease;
         border: 1px solid var(--line);
-        background: white;
+        background: rgba(255,255,255,.96);
+        width: auto;
+        box-shadow: 0 8px 22px rgba(15,23,42,.04);
     }
 
     .stButton button:hover {
         transform: translateY(-1px);
-        border-color: #cbd5e1;
+        border-color: rgba(99,102,241,.28);
+        box-shadow: 0 14px 28px rgba(99,102,241,.10);
     }
 
     .stDownloadButton button {

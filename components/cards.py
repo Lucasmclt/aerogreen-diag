@@ -14,7 +14,7 @@ def render_page_header(title: str, subtitle: str, tag: str | None = None):
 
 def render_kpi_card(title: str, value: str, subtitle: str, color: str = "#111827"):
     st.markdown(f"""
-    <div class='card'>
+    <div class='card uniform-card'>
         <div class='section-title'>{title}</div>
         <div class='kpi' style='color:{color};'>{value}</div>
         <div class='kpi-sub'>{subtitle}</div>
@@ -24,7 +24,7 @@ def render_kpi_card(title: str, value: str, subtitle: str, color: str = "#111827
 
 def render_feature_card(title: str, text: str):
     st.markdown(f"""
-    <div class='card'>
+    <div class='card metric-card'>
         <div class='feature-title'>{title}</div>
         <div class='feature-text'>{text}</div>
     </div>
@@ -33,7 +33,7 @@ def render_feature_card(title: str, text: str):
 
 def render_soft_step_card(step: str, title: str, text: str):
     st.markdown(f"""
-    <div class='card-soft'>
+    <div class='card-soft uniform-soft-card'>
         <div class='section-title'>{step}</div>
         <strong>{title}</strong>
         <p class='feature-text'>{text}</p>
@@ -44,7 +44,7 @@ def render_soft_step_card(step: str, title: str, text: str):
 def render_section_intro(label: str, title: str, text: str = ""):
     extra = f"<div class='feature-text'>{text}</div>" if text else ""
     st.markdown(f"""
-    <div class='card-soft'>
+    <div class='card-soft section-intro-card'>
         <div class='section-title'>{label}</div>
         <strong>{title}</strong>
         {extra}
@@ -55,7 +55,7 @@ def render_section_intro(label: str, title: str, text: str = ""):
 def render_progress(current_step: int, total_steps: int):
     percentage = int((current_step / total_steps) * 100)
     st.markdown(f"""
-    <div class='card-soft'>
+    <div class='card-soft progress-card'>
         <div class='section-title'>Progression diagnostic</div>
         <strong>Étape {current_step} / {total_steps}</strong>
         <div class='progress-track'>
@@ -69,7 +69,7 @@ def render_progress(current_step: int, total_steps: int):
 def render_recommendation_card(priority: str, title: str, text: str):
     color = "#ef4444" if priority == "Haute" else "#f59e0b" if priority == "Moyenne" else "#10b981"
     st.markdown(f"""
-    <div class='card'>
+    <div class='card recommendation-card'>
         <span class='pill' style='background:{color}18; color:{color};'>{priority}</span>
         <div style='height:10px;'></div>
         <div class='feature-title'>{title}</div>
