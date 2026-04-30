@@ -1946,13 +1946,6 @@ def load_css():
         font-size: .93rem;
     }
 
-    .auth-card-shell {
-        background: rgba(255,255,255,.96);
-        border: 1px solid rgba(226,232,240,.95);
-        border-radius: 28px;
-        padding: 24px 24px 18px;
-        box-shadow: 0 20px 44px rgba(15,23,42,.08);
-    }
 
     .auth-tab-intro {
         margin-bottom: .8rem;
@@ -2077,6 +2070,31 @@ def load_css():
         .auth-card-shell {
             padding: 20px;
         }
+    }
+
+    
+    /* V18 LOGIN FIX */
+    .auth-form-intro-card {
+        background: rgba(255,255,255,.92);
+        border: 1px solid rgba(226,232,240,.92);
+        border-radius: 22px;
+        padding: 16px 18px;
+        box-shadow: 0 12px 28px rgba(15,23,42,.05);
+        margin-bottom: 1rem;
+    }
+
+    .auth-form-intro-title {
+        color: #0f172a;
+        font-size: 1rem;
+        font-weight: 850;
+        letter-spacing: -.02em;
+        margin-bottom: 4px;
+    }
+
+    .auth-form-intro-text {
+        color: #64748b;
+        font-size: .92rem;
+        line-height: 1.55;
     }
 
     </style>

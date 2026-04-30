@@ -100,3 +100,9 @@ Pour une production réelle, ajoutez impérativement :
 - Mise en page en deux colonnes
 - Indicateur visuel de robustesse du mot de passe
 - Couleur dynamique selon la complexité
+
+
+## V18
+- Correction du rectangle vide sur la page de connexion
+- Suppression du wrapper visuel vide à droite
+- Ajout d’un petit bloc d’introduction plus propre au-dessus du formulaire

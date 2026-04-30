@@ -108,7 +108,15 @@ def render_login():
         )
 
     with right:
-        st.markdown('<div class="auth-card-shell">', unsafe_allow_html=True)
+        st.markdown(
+            """
+            <div class="auth-form-intro-card">
+                <div class="auth-form-intro-title">Accès à votre espace</div>
+                <div class="auth-form-intro-text">Connectez-vous ou créez votre compte professionnel pour poursuivre votre diagnostic.</div>
+            </div>
+            """,
+            unsafe_allow_html=True,
+        )
         tab_login, tab_register = st.tabs(["Connexion", "Créer un compte"])
 
         with tab_login:
@@ -186,4 +194,3 @@ def render_login():
                     else:
                         st.error(message)
 
-        st.markdown("</div>", unsafe_allow_html=True)
