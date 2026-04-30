@@ -12,7 +12,7 @@ def render_fit_test():
     )
 
     if not st.session_state.workspace_created:
-        st.warning("Conseil : crée d’abord un workspace client dans l’accueil. Tu peux quand même continuer.")
+        st.info("Vous pouvez réaliser ce test sans préparer de dossier. Le dossier client pourra être créé plus tard dans l’espace professionnel.")
 
     taille = st.selectbox(
         "Taille de l’entreprise",

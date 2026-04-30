@@ -16,12 +16,7 @@ def render_home():
             <p>
                 AeroGreen aide les PME industrielles et aéronautiques à obtenir une première lecture claire
                 de leur impact numérique : équipements, données techniques, cloud, gouvernance et achats IT.
-            </p>
-            <div class='hero-actions'>
-                <span class='hero-action-primary'>Test rapide gratuit</span>
-                <span class='hero-action-secondary'>Diagnostic avancé sur compte pro</span>
-            </div>
-        </div>
+            </p>        </div>
         <div class='hero-visual'>
             <div class='score-orb'>
                 <span>Score</span>
@@ -43,13 +38,13 @@ def render_home():
     </div>
     """, unsafe_allow_html=True)
 
-    cta_l, cta_a, cta_b, cta_r = st.columns([1.2, 1, 1, 3])
-    with cta_a:
-        if st.button("Test rapide gratuit"):
+    cta1, cta2, cta3 = st.columns([1.15, 1.55, 4.3])
+    with cta1:
+        if st.button("Test rapide gratuit", key="hero_test_btn", type="primary", use_container_width=True):
             st.session_state.page = "Test rapide"
             st.rerun()
-    with cta_b:
-        if st.button("Espace professionnel"):
+    with cta2:
+        if st.button("Diagnostic avancé sur compte pro", key="hero_pro_btn", use_container_width=True):
             st.session_state.page = "Connexion"
             st.rerun()
 

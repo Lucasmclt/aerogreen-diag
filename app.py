@@ -2,7 +2,6 @@ import streamlit as st
 
 from styles.css import load_css
 from services.database import init_db
-from components.sidebar import render_sidebar
 from components.topbar import render_topbar
 from pages_app.home import render_home
 from pages_app.login import render_login
@@ -17,7 +16,7 @@ st.set_page_config(
     page_title="AeroGreen",
     page_icon="✈️",
     layout="wide",
-    initial_sidebar_state="expanded"
+    initial_sidebar_state="collapsed"
 )
 
 
@@ -73,12 +72,9 @@ def main():
     init_db()
     init_session_state()
     load_css()
-    render_sidebar()
+    render_topbar()
 
     page = st.session_state.page
-
-    if page != "Connexion":
-        render_topbar()
 
     if page == "Accueil":
         render_home()

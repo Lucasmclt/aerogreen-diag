@@ -51,8 +51,21 @@ def load_css():
         color: var(--text);
     }
 
+
+    /* HIDE SIDEBAR */
+    [data-testid="stSidebar"],
+    [data-testid="collapsedControl"] {
+        display: none !important;
+    }
+
+    .block-container {
+        max-width: 1380px;
+        padding-top: 1.2rem;
+    }
+
     /* SIDEBAR */
     [data-testid="stSidebar"] {
+        display:none !important;
         background:
             radial-gradient(circle at top left, rgba(99,102,241,0.10), transparent 26%),
             #ffffff;
@@ -167,7 +180,7 @@ def load_css():
         border-radius: 22px;
         padding: 18px 22px;
         box-shadow: 0 12px 28px rgba(15,23,42,0.05);
-        margin-bottom: 1rem;
+        margin-bottom: 0.8rem;
         animation: fadeIn .28s ease-in;
     }
 
@@ -235,6 +248,47 @@ def load_css():
         border-color: rgba(99,102,241,.18);
     }
 
+
+    .topbar-shell-clean {
+        border-radius: 24px;
+        padding: 16px 18px;
+    }
+
+    .topbar-left-block {
+        display: flex;
+        align-items: center;
+    }
+
+    .topbar-logo-row {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+    }
+
+    .topbar-brand-mark {
+        width: 42px;
+        height: 42px;
+        border-radius: 14px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: linear-gradient(135deg, rgba(99,102,241,.14), rgba(16,185,129,.14));
+        font-size: 1.15rem;
+    }
+
+    .topbar-brand-name {
+        font-size: 1.06rem;
+        font-weight: 900;
+        color: var(--text);
+        letter-spacing: -.03em;
+    }
+
+    .topbar-brand-sub {
+        color: var(--muted);
+        font-size: .82rem;
+        margin-top: 2px;
+    }
+
     /* HERO + PAGE INTRO */
     .hero {
         background:
@@ -256,7 +310,7 @@ def load_css():
         padding: 28px 28px 24px;
         box-shadow: var(--shadow);
         animation: fadeIn .32s ease-in;
-        margin-bottom: 1rem;
+        margin-bottom: 0.8rem;
     }
 
     .page-header-tag {
@@ -309,6 +363,26 @@ def load_css():
         font-size: 1.06rem;
         line-height: 1.75;
         max-width: 860px;
+    }
+
+
+    .landing-hero {
+        margin-bottom: 0.7rem;
+    }
+
+    .hero-actions,
+    .hero-action-primary,
+    .hero-action-secondary {
+        display: none !important;
+    }
+
+    .trust-strip {
+        margin-top: 1.1rem;
+    }
+
+    div[data-testid="stHorizontalBlock"] > div:has(button#hero_test_btn),
+    div[data-testid="stHorizontalBlock"] > div:has(button#hero_pro_btn) {
+        align-self: end;
     }
 
     /* CARDS */
@@ -985,21 +1059,44 @@ def load_css():
         flex-direction: column;
     }
 
+
     .stButton button {
-        border-radius: 999px;
-        padding: 0.72rem 1.08rem;
-        font-weight: 800;
-        transition: all .18s ease;
-        border: 1px solid var(--line);
-        background: rgba(255,255,255,.96);
-        width: auto;
+        border-radius: 999px !important;
+        padding: 0.76rem 1.12rem !important;
+        font-weight: 800 !important;
+        transition: all .18s ease !important;
+        border: 1px solid var(--line) !important;
+        background: rgba(255,255,255,.96) !important;
+        width: 100%;
         box-shadow: 0 8px 22px rgba(15,23,42,.04);
     }
 
     .stButton button:hover {
         transform: translateY(-1px);
-        border-color: rgba(99,102,241,.28);
+        border-color: rgba(99,102,241,.28) !important;
         box-shadow: 0 14px 28px rgba(99,102,241,.10);
+    }
+
+    .stButton button[kind="primary"] {
+        background: #0b1534 !important;
+        color: white !important;
+        border-color: #0b1534 !important;
+        box-shadow: 0 16px 30px rgba(11,21,52,.16) !important;
+    }
+
+    .stButton button[kind="primary"]:hover {
+        background: #101d45 !important;
+        border-color: #101d45 !important;
+    }
+
+    .stButton button[kind="secondary"] {
+        background: rgba(99,102,241,.08) !important;
+        color: #4f46e5 !important;
+        border-color: rgba(99,102,241,.22) !important;
+    }
+
+    .stButton button[kind="secondary"]:hover {
+        background: rgba(99,102,241,.12) !important;
     }
 
     .stDownloadButton button {
