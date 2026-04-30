@@ -64,3 +64,8 @@ Pour une production réelle, ajoutez impérativement :
 - Boutons du hero intégrés dans la bulle visuelle
 - Navigation par query params
 - Boutons lisibles et cohérents
+
+
+## V12
+- Correction du bug d’affichage HTML dans la topbar
+- Navigation topbar rendue proprement via HTML dédenté
