@@ -73,52 +73,109 @@ def create_pdf_bytes(total_tonnes, df_detail, level, maturity_score):
 
 # --- CSS ÉPURÉ ---
 st.markdown("""
-    <style>
-    /* Fond de page clair */
-    .stApp {
-        background-color: #f8f9fa;
-    }
-    /* Titre principal */
-    .main-title {
-        color: #1a365d;
-        font-family: 'Inter', sans-serif;
-        text-align: center;
-        font-weight: 800;
-        padding: 1.5rem;
-        background: white;
-        border-radius: 12px;
-        border: 1px solid #e2e8f0;
-        margin-bottom: 2rem;
-    }
-    /* Cartes de contenu */
-    .custom-card {
-        background-color: #ffffff;
-        padding: 24px;
-        border-radius: 12px;
-        border: 1px solid #e2e8f0;
-        box-shadow: 0 1px 3px rgba(0,0,0,0.05);
-        margin-bottom: 1rem;
-    }
-    /* Sous-titres */
-    h3 {
-        color: #1a365d !important;
-        font-size: 1.2rem !important;
-        font-weight: 600 !important;
-        margin-bottom: 1rem !important;
-    }
-    /* Labels et textes */
-    .stText, p, label {
-        color: #4a5568 !important;
-    }
-    /* Style des inputs */
-    .stNumberInput input {
-        background-color: #fdfdfd !important;
-    }
-    </style>
+<style>
+
+/* Fond global */
+.stApp {
+    background-color: #f5f5f7;
+    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Helvetica Neue", sans-serif;
+}
+
+/* Titre principal */
+.main-title {
+    text-align: center;
+    padding: 2rem 1rem;
+    margin-bottom: 2rem;
+}
+
+.main-title h1 {
+    font-size: 2.4rem;
+    font-weight: 600;
+    color: #1d1d1f;
+    margin-bottom: 0.3rem;
+}
+
+.main-title p {
+    color: #6e6e73;
+    font-size: 1rem;
+}
+
+/* Cartes style Apple */
+.custom-card {
+    background: rgba(255, 255, 255, 0.7);
+    backdrop-filter: blur(20px);
+    border-radius: 20px;
+    padding: 22px;
+    border: 1px solid rgba(0,0,0,0.05);
+    box-shadow: 0 8px 20px rgba(0,0,0,0.04);
+    margin-bottom: 1.5rem;
+}
+
+/* Titres sections */
+h3 {
+    font-size: 1.1rem !important;
+    font-weight: 600 !important;
+    color: #1d1d1f !important;
+    margin-bottom: 1rem !important;
+}
+
+/* Texte */
+label, p {
+    color: #3a3a3c !important;
+    font-size: 0.95rem !important;
+}
+
+/* Inputs */
+.stNumberInput input {
+    background-color: #ffffff !important;
+    border-radius: 10px !important;
+    border: 1px solid #d2d2d7 !important;
+    padding: 8px !important;
+}
+
+/* Checkbox */
+.stCheckbox > label {
+    font-size: 0.95rem !important;
+}
+
+/* Tableau */
+[data-testid="stDataFrame"] {
+    border-radius: 12px;
+    overflow: hidden;
+}
+
+/* Bouton */
+.stDownloadButton button {
+    background-color: #0071e3;
+    color: white;
+    border-radius: 12px;
+    padding: 10px;
+    border: none;
+    font-weight: 500;
+}
+
+.stDownloadButton button:hover {
+    background-color: #005bb5;
+}
+
+/* Séparateur */
+hr {
+    border: none;
+    height: 1px;
+    background: #e5e5ea;
+    margin: 2rem 0;
+}
+
+</style>
 """, unsafe_allow_html=True)
 
 # --- HEADER ---
-st.markdown("<div class='main-title'><h1>✈️ AéroGreen Diag</h1><p style='color: #718096; margin:0;'>Auto-diagnostic carbone numérique pour l'industrie aéronautique</p></div>", unsafe_allow_html=True)
+st.markdown("""
+<div class='main-title'>
+    <h1>AéroGreen Diag</h1>
+    <p>Auto-diagnostic carbone pour l'industrie aéronautique</p>
+</div>
+""", unsafe_allow_html=True)
 
 # --- QUESTIONNAIRE ---
 col1, col2, col3 = st.columns(3)
@@ -133,7 +190,7 @@ with col1:
 with col2:
     st.markdown("<div class='custom-card'><h3>💾 Données PLM</h3>", unsafe_allow_html=True)
     stockage_plm = st.number_input("Volume stockage (To)", 0.0, 5000.0, 0.0, help="Données stockées sur serveurs ou cloud")
-    st.info("💡 Le stockage PLM est un poste clé en aéronautique.")
+    st.caption("Le stockage PLM représente souvent le principal levier d’optimisation.")
     st.markdown("</div>", unsafe_allow_html=True)
 
 with col3:
@@ -175,7 +232,7 @@ with res_col2:
     fig = go.Figure(go.Indicator(
         mode="gauge+number", value=maturite,
         gauge={'axis': {'range': [0, 100], 'tickcolor': "#4a5568"},
-               'bar': {'color': "#1a365d"},
+               'bar': {'color': "#0071e3"},
                'steps': [{'range': [0, 33], 'color': "#fee2e2"}, 
                          {'range': [33, 66], 'color': "#fef3c7"}, 
                          {'range': [66, 100], 'color': "#d1fae5"}]}
