@@ -50,3 +50,10 @@ Pour une production réelle, ajoutez impérativement :
 - Navigation sidebar corrigée avec boutons réels
 - Suppression des textes non orientés client dans l’interface
 - Boutons et cartes harmonisés
+
+
+## V10
+- Topbar nettoyée
+- Suppression du bug d’affichage du </div>
+- Boutons de navigation mieux stylés
+- Boutons du hero fonctionnels et cohérents

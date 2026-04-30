@@ -254,11 +254,6 @@ def load_css():
         padding: 16px 18px;
     }
 
-    .topbar-left-block {
-        display: flex;
-        align-items: center;
-    }
-
     .topbar-logo-row {
         display: flex;
         align-items: center;
@@ -383,6 +378,89 @@ def load_css():
     div[data-testid="stHorizontalBlock"] > div:has(button#hero_test_btn),
     div[data-testid="stHorizontalBlock"] > div:has(button#hero_pro_btn) {
         align-self: end;
+    }
+
+
+    .topbar-shell-clean {
+        border-radius: 24px;
+        padding: 16px 18px;
+        margin-bottom: 0.9rem;
+    }
+
+    .topbar-logo-row {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+    }
+
+    .topbar-brand-mark {
+        width: 42px;
+        height: 42px;
+        border-radius: 14px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: linear-gradient(135deg, rgba(99,102,241,.14), rgba(16,185,129,.14));
+        font-size: 1.15rem;
+    }
+
+    .topbar-brand-name {
+        font-size: 1.06rem;
+        font-weight: 900;
+        color: var(--text);
+        letter-spacing: -.03em;
+    }
+
+    .topbar-brand-sub {
+        color: var(--muted);
+        font-size: .82rem;
+        margin-top: 2px;
+    }
+
+    .stButton button,
+    button[data-testid="baseButton-secondary"],
+    button[data-testid="baseButton-primary"] {
+        border-radius: 999px !important;
+        padding: 0.76rem 1.12rem !important;
+        font-weight: 800 !important;
+        transition: all .18s ease !important;
+        width: 100% !important;
+        box-shadow: 0 8px 22px rgba(15,23,42,.04) !important;
+    }
+
+    .stButton button,
+    button[data-testid="baseButton-secondary"] {
+        border: 1px solid rgba(99,102,241,.18) !important;
+        background: rgba(99,102,241,.08) !important;
+        color: #4f46e5 !important;
+    }
+
+    .stButton button:hover,
+    button[data-testid="baseButton-secondary"]:hover,
+    button[data-testid="baseButton-primary"]:hover {
+        transform: translateY(-1px);
+    }
+
+    button[data-testid="baseButton-primary"] {
+        background: #0b1534 !important;
+        color: #ffffff !important;
+        border: 1px solid #0b1534 !important;
+        box-shadow: 0 16px 30px rgba(11,21,52,.16) !important;
+    }
+
+    button[data-testid="baseButton-primary"] p,
+    button[data-testid="baseButton-primary"] span {
+        color: #ffffff !important;
+    }
+
+    .landing-hero {
+        margin-bottom: 0.65rem;
+    }
+
+    .hero-actions,
+    .hero-action-primary,
+    .hero-action-secondary {
+        display: none !important;
     }
 
     /* CARDS */
