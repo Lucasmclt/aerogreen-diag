@@ -106,3 +106,9 @@ Pour une production réelle, ajoutez impérativement :
 - Correction du rectangle vide sur la page de connexion
 - Suppression du wrapper visuel vide à droite
 - Ajout d’un petit bloc d’introduction plus propre au-dessus du formulaire
+
+
+## V19
+- Suppression du kicker au-dessus du titre de connexion
+- Suppression de la barre rouge/slider sous les tabs
+- Renforcement du feedback visuel en direct sur le mot de passe

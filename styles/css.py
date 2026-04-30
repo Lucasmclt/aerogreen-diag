@@ -2097,5 +2097,58 @@ def load_css():
         line-height: 1.55;
     }
 
+    
+    /* V19 LOGIN POLISH */
+    .auth-page-shell {
+        margin-top: 0.2rem;
+    }
+
+    .auth-page-intro {
+        padding-top: 0.1rem;
+    }
+
+    .auth-form-intro-card,
+    .auth-kicker {
+        display: none !important;
+    }
+
+    .login-password-live {
+        margin: .25rem 0 .75rem;
+        padding: 10px 12px;
+        border-radius: 14px;
+        border: 1px solid rgba(226,232,240,.92);
+        font-size: .84rem;
+        font-weight: 700;
+        transition: all .2s ease;
+    }
+
+    .password-meter-card {
+        transition: all .22s ease;
+        box-shadow: 0 12px 28px rgba(15,23,42,.05);
+    }
+
+    /* Remove Streamlit tab underline / slider and bottom rule */
+    .stTabs [data-baseweb="tab-highlight"] {
+        display: none !important;
+    }
+
+    .stTabs [data-baseweb="tab-border"] {
+        display: none !important;
+    }
+
+    .stTabs [data-baseweb="tab-list"] {
+        border-bottom: none !important;
+        box-shadow: none !important;
+        margin-bottom: .85rem;
+    }
+
+    .stTabs [data-baseweb="tab"] {
+        box-shadow: none !important;
+    }
+
+    .stTabs [aria-selected="true"] {
+        box-shadow: 0 10px 22px rgba(99,102,241,.08) !important;
+    }
+
     </style>
     """, unsafe_allow_html=True)

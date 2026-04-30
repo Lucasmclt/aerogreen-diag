@@ -32,7 +32,7 @@ def render_strength_meter(password: str):
 
     st.markdown(
         f"""
-        <div class="password-meter-card">
+        <div class="password-meter-card" style="border-color:{color}33; box-shadow: 0 12px 28px {color}18;">
             <div class="password-meter-head">
                 <span class="password-meter-label">Robustesse du mot de passe</span>
                 <span class="password-meter-pill" style="color:{color}; border-color:{color}33; background:{color}12;">{label}</span>
@@ -52,8 +52,7 @@ def render_login():
         """
         <div class="auth-page-shell">
             <div class="auth-page-intro">
-                <div class="auth-kicker">Espace professionnel</div>
-                <h1>Connectez-vous à votre espace AeroGreen.</h1>
+                                <h1>Connectez-vous à votre espace AeroGreen.</h1>
                 <p>
                     Gérez vos diagnostics, conservez vos dossiers et générez vos rapports dans
                     une interface plus complète, pensée pour un usage professionnel.
@@ -108,15 +107,6 @@ def render_login():
         )
 
     with right:
-        st.markdown(
-            """
-            <div class="auth-form-intro-card">
-                <div class="auth-form-intro-title">Accès à votre espace</div>
-                <div class="auth-form-intro-text">Connectez-vous ou créez votre compte professionnel pour poursuivre votre diagnostic.</div>
-            </div>
-            """,
-            unsafe_allow_html=True,
-        )
         tab_login, tab_register = st.tabs(["Connexion", "Créer un compte"])
 
         with tab_login:
@@ -131,6 +121,16 @@ def render_login():
             )
             email = st.text_input("Email professionnel", key="login_email", placeholder="vous@entreprise.com")
             password = st.text_input("Mot de passe", type="password", key="login_password", placeholder="Votre mot de passe")
+            if password:
+                _, login_label, login_color, _ = password_strength(password)
+                st.markdown(
+                    f"""
+                    <div class="login-password-live" style="border-color:{login_color}33; background:{login_color}10; color:{login_color};">
+                        Robustesse détectée : <strong style="color:{login_color};">{login_label}</strong>
+                    </div>
+                    """,
+                    unsafe_allow_html=True,
+                )
 
             if st.button("Se connecter", key="login_submit", use_container_width=True):
                 user = authenticate_user(email, password)
