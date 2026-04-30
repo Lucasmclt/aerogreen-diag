@@ -17,6 +17,7 @@ def render_score():
         st.warning("Aucun diagnostic avancé n’a encore été calculé.")
         if st.button("Lancer le diagnostic avancé"):
             st.session_state.page = "Diagnostic avancé"
+            st.query_params["page"] = "Diagnostic avancé"
             st.rerun()
         return
 
@@ -91,4 +92,5 @@ def render_score():
     with cta2:
         if st.button("Générer le rapport"):
             st.session_state.page = "Rapport"
+            st.query_params["page"] = "Rapport"
             st.rerun()

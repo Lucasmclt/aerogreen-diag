@@ -20,37 +20,35 @@ st.set_page_config(
 )
 
 
-PUBLIC_PAGES = ["Accueil", "Test rapide", "Connexion"]
+ALL_PAGES = [
+    "Accueil",
+    "Test rapide",
+    "Connexion",
+    "Dashboard",
+    "Diagnostic avancé",
+    "Score",
+    "Rapport",
+]
 
 
 def init_session_state():
     defaults = {
         "page": "Accueil",
-
-        # SaaS workspace
         "workspace_created": False,
         "company_name": "",
         "contact_name": "",
         "company_city": "Toulouse",
         "company_sector": "",
         "client_reference": "",
-
-        # Fit test
         "fit_test_done": False,
         "fit_score": 0,
         "fit_result": "",
         "fit_answers": {},
-
-        # Wizard
         "wizard_step": 1,
         "diagnostic_done": False,
         "diagnostic_inputs": {},
         "diagnostic_result": None,
-
-        # Report
         "report_ready": False,
-
-        # Auth
         "authenticated": False,
         "user_id": None,
         "user_email": "",
@@ -61,9 +59,30 @@ def init_session_state():
             st.session_state[key] = value
 
 
+def sync_query_params():
+    params = st.query_params
+    action = params.get("action")
+
+    if action == "logout":
+        st.session_state.authenticated = False
+        st.session_state.user_id = None
+        st.session_state.user_email = ""
+        st.session_state.page = "Accueil"
+        st.query_params.clear()
+        st.query_params["page"] = "Accueil"
+        st.rerun()
+
+    page = params.get("page")
+    if page in ALL_PAGES:
+        st.session_state.page = page
+    else:
+        st.query_params["page"] = st.session_state.page
+
+
 def require_auth():
     if not st.session_state.authenticated:
         st.session_state.page = "Connexion"
+        st.query_params["page"] = "Connexion"
         return False
     return True
 
@@ -71,6 +90,7 @@ def require_auth():
 def main():
     init_db()
     init_session_state()
+    sync_query_params()
     load_css()
     render_topbar()
 
@@ -104,6 +124,7 @@ def main():
             render_login()
     else:
         st.session_state.page = "Accueil"
+        st.query_params["page"] = "Accueil"
         render_home()
 
 

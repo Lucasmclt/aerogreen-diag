@@ -17,6 +17,7 @@ def render_report():
         st.warning("Aucun diagnostic avancé n’a encore été généré.")
         if st.button("Aller au diagnostic avancé"):
             st.session_state.page = "Diagnostic avancé"
+            st.query_params["page"] = "Diagnostic avancé"
             st.rerun()
         return
 

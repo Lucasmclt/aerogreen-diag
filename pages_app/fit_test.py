@@ -89,4 +89,5 @@ def render_fit_test():
 
             if st.button("Créer un compte / se connecter"):
                 st.session_state.page = "Connexion"
+                st.query_params["page"] = "Connexion"
                 st.rerun()

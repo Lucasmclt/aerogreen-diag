@@ -57,3 +57,10 @@ Pour une production réelle, ajoutez impérativement :
 - Suppression du bug d’affichage du </div>
 - Boutons de navigation mieux stylés
 - Boutons du hero fonctionnels et cohérents
+
+
+## V11
+- Navigation intégrée dans la topbar
+- Boutons du hero intégrés dans la bulle visuelle
+- Navigation par query params
+- Boutons lisibles et cohérents

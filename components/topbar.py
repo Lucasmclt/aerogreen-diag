@@ -1,4 +1,5 @@
 import streamlit as st
+from urllib.parse import quote
 
 PUBLIC_PAGES = [("Accueil", "Accueil"), ("Test rapide", "Test rapide")]
 PRIVATE_PAGES = [
@@ -9,32 +10,14 @@ PRIVATE_PAGES = [
 ]
 
 
-def _go_to(page: str):
-    st.session_state.page = page
-    st.rerun()
+def nav_link(label: str, page: str, active_page: str) -> str:
+    active = "active" if active_page == page else ""
+    return f"<a class='topnav-link {active}' href='?page={quote(page)}'>{label}</a>"
 
 
 def render_topbar():
     company_name = st.session_state.company_name if st.session_state.workspace_created else "Mode invité"
     access_label = "Connecté" if st.session_state.authenticated else "Accès gratuit"
-
-    st.markdown(
-        f"""
-        <div class='topbar-shell topbar-shell-clean'>
-            <div class='topbar-logo-row'>
-                <div class='topbar-brand-mark'>✈️</div>
-                <div>
-                    <div class='topbar-brand-name'>AeroGreen</div>
-                    <div class='topbar-brand-sub'>{company_name}</div>
-                </div>
-            </div>
-            <div class='topbar-right'>
-                <span class='topbar-chip warning'>{access_label}</span>
-            </div>
-        </div>
-        """,
-        unsafe_allow_html=True,
-    )
 
     nav_items = PUBLIC_PAGES[:]
     if st.session_state.authenticated:
@@ -42,21 +25,32 @@ def render_topbar():
     else:
         nav_items += [("Connexion", "Connexion")]
 
-    cols = st.columns([1] * len(nav_items))
-    for col, (label, page) in zip(cols, nav_items):
-        with col:
-            btn_type = "primary" if st.session_state.page == page else "secondary"
-            if st.button(label, key=f"topnav_{page}", type=btn_type, use_container_width=True):
-                _go_to(page)
+    nav_html = "".join(nav_link(label, page, st.session_state.page) for label, page in nav_items)
 
+    logout_html = ""
     if st.session_state.authenticated:
-        right_cols = st.columns([8, 1.2])
-        with right_cols[1]:
-            if st.button("Déconnexion", key="top_logout", use_container_width=True):
-                st.session_state.authenticated = False
-                st.session_state.user_id = None
-                st.session_state.user_email = ""
-                st.session_state.page = "Accueil"
-                st.rerun()
+        logout_html = "<a class='topbar-chip logout-chip' href='?action=logout'>Déconnexion</a>"
 
-    st.markdown("<div style='height:0.55rem'></div>", unsafe_allow_html=True)
+    st.markdown(
+        f"""
+        <div class='topbar-shell topbar-shell-clean final-topbar'>
+            <div class='topbar-main-row'>
+                <div class='topbar-logo-row'>
+                    <div class='topbar-brand-mark'>✈️</div>
+                    <div>
+                        <div class='topbar-brand-name'>AeroGreen</div>
+                        <div class='topbar-brand-sub'>{company_name}</div>
+                    </div>
+                </div>
+                <div class='topbar-right'>
+                    <span class='topbar-chip warning'>{access_label}</span>
+                    {logout_html}
+                </div>
+            </div>
+            <div class='topbar-nav-row'>
+                {nav_html}
+            </div>
+        </div>
+        """,
+        unsafe_allow_html=True,
+    )

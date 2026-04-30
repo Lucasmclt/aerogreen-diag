@@ -34,6 +34,7 @@ def render_nav_buttons():
                 st.session_state.diagnostic_done = True
                 st.session_state.report_ready = True
                 st.session_state.page = "Score"
+                st.query_params["page"] = "Score"
                 st.rerun()
 
 

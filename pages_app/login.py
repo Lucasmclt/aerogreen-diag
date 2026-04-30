@@ -29,6 +29,7 @@ def render_login():
                 st.session_state.user_email = user["email"]
                 st.success("Connexion réussie.")
                 st.session_state.page = "Diagnostic avancé" if st.session_state.fit_test_done else "Dashboard"
+                st.query_params["page"] = st.session_state.page
                 st.rerun()
             else:
                 st.error("Identifiants incorrects.")

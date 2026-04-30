@@ -16,7 +16,12 @@ def render_home():
             <p>
                 AeroGreen aide les PME industrielles et aéronautiques à obtenir une première lecture claire
                 de leur impact numérique : équipements, données techniques, cloud, gouvernance et achats IT.
-            </p>        </div>
+            </p>
+            <div class='hero-cta-row'>
+                <a class='hero-cta primary' href='?page=Test%20rapide'>Test rapide gratuit</a>
+                <a class='hero-cta secondary' href='?page=Connexion'>Diagnostic avancé sur compte pro</a>
+            </div>
+        </div>
         <div class='hero-visual'>
             <div class='score-orb'>
                 <span>Score</span>
@@ -37,16 +42,6 @@ def render_home():
         </div>
     </div>
     """, unsafe_allow_html=True)
-
-    cta1, cta2, cta3 = st.columns([1.15, 1.55, 4.3])
-    with cta1:
-        if st.button("Test rapide gratuit", key="hero_test_btn", type="primary", use_container_width=True):
-            st.session_state.page = "Test rapide"
-            st.rerun()
-    with cta2:
-        if st.button("Diagnostic avancé sur compte pro", key="hero_pro_btn", use_container_width=True):
-            st.session_state.page = "Connexion"
-            st.rerun()
 
     st.markdown("""
     <div class='trust-strip'>
@@ -143,6 +138,7 @@ def render_home():
                 st.session_state.workspace_created = True
                 st.success("Espace client enregistré.")
                 st.session_state.page = "Diagnostic avancé"
+                st.query_params["page"] = "Diagnostic avancé"
                 st.rerun()
 
         with right:
