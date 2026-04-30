@@ -1,12 +1,17 @@
 import streamlit as st
 from datetime import datetime
 
+from components.cards import render_page_header
 from services.calculations import build_recommendations, get_fit_result
 from services.pdf_generator import create_premium_pdf_bytes
 
 
 def render_report():
-    st.markdown("## Rapport premium")
+    render_page_header(
+        "Rapport premium",
+        "Export final du pré-audit : synthèse exécutive, score, émissions et recommandations prioritaires.",
+        "Export"
+    )
 
     if not st.session_state.diagnostic_done or not st.session_state.diagnostic_result:
         st.warning("Aucun diagnostic avancé n’a encore été généré.")

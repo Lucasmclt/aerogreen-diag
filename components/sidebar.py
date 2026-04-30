@@ -3,46 +3,47 @@ import streamlit as st
 from services.calculations import get_fit_result, get_grade
 
 
-def _nav_button(label: str, page: str):
-    if st.button(label):
-        st.session_state.page = page
-        st.rerun()
+PAGES = ["Accueil", "Test rapide", "Diagnostic avancé", "Score", "Rapport"]
 
 
 def render_sidebar():
     with st.sidebar:
-        st.markdown("## ✈️ AeroGreen")
-        st.caption("ESG digital pre-audit platform")
+        st.markdown("""
+        <div class='sidebar-brand'>
+            <div class='sidebar-brand-title'>✈️ AeroGreen</div>
+            <div class='sidebar-brand-sub'>Plateforme de pré-audit carbone numérique pour les sous-traitants aéronautiques.</div>
+        </div>
+        """, unsafe_allow_html=True)
 
         if st.session_state.workspace_created:
             st.markdown(f"""
-            <div class='card-soft'>
-                <div class='section-title'>Workspace</div>
-                <strong>{st.session_state.company_name}</strong>
-                <div class='feature-text small'>{st.session_state.company_city}</div>
+            <div class='card-soft' style='margin-bottom:.85rem;'>
+                <div class='section-title'>Workspace actif</div>
+                <div class='feature-title' style='margin-bottom:3px;'>{st.session_state.company_name}</div>
+                <div class='feature-text small'>{st.session_state.company_city} · {st.session_state.company_sector}</div>
+                <div class='feature-text small'>Réf. {st.session_state.client_reference or 'N/A'}</div>
             </div>
             """, unsafe_allow_html=True)
-        else:
-            st.caption("Aucun workspace client créé.")
 
-        st.divider()
+        st.markdown("<div class='sidebar-section-label'>Navigation</div>", unsafe_allow_html=True)
+        current = st.session_state.page if st.session_state.page in PAGES else PAGES[0]
+        selected = st.radio(
+            "Navigation",
+            options=PAGES,
+            index=PAGES.index(current),
+            label_visibility="collapsed",
+        )
+        if selected != st.session_state.page:
+            st.session_state.page = selected
 
-        _nav_button("Accueil", "Accueil")
-        _nav_button("Test rapide", "Test rapide")
-        _nav_button("Diagnostic avancé", "Diagnostic avancé")
-        _nav_button("Score", "Score")
-        _nav_button("Rapport", "Rapport")
-
-        st.divider()
+        st.markdown("<div class='sidebar-section-label'>Statut</div>", unsafe_allow_html=True)
 
         if st.session_state.fit_test_done:
             result_label, result_color = get_fit_result(st.session_state.fit_score)
             st.markdown(f"""
-            <div class='card-soft'>
+            <div class='card-soft' style='margin-bottom:.7rem;'>
                 <div class='section-title'>Éligibilité</div>
-                <div style='font-weight:800; font-size:1.4rem; color:{result_color};'>
-                    {st.session_state.fit_score:.0f}%
-                </div>
+                <div style='font-weight:800; font-size:1.35rem; color:{result_color};'>{st.session_state.fit_score:.0f}%</div>
                 <div class='feature-text small'>{result_label}</div>
             </div>
             """, unsafe_allow_html=True)
@@ -53,9 +54,9 @@ def render_sidebar():
             st.markdown(f"""
             <div class='card-soft'>
                 <div class='section-title'>Score global</div>
-                <div style='font-weight:900; font-size:1.7rem; color:{color};'>
-                    {grade} · {score:.0f}/100
-                </div>
-                <div class='feature-text small'>Pré-audit avancé complété</div>
+                <div style='font-weight:900; font-size:1.55rem; color:{color};'>{grade} · {score:.0f}/100</div>
+                <div class='feature-text small'>{st.session_state.diagnostic_result['risk_label']}</div>
             </div>
             """, unsafe_allow_html=True)
+        elif not st.session_state.fit_test_done:
+            st.caption("Commence par le test rapide pour lancer le parcours complet.")

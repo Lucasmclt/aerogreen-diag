@@ -1,12 +1,16 @@
 import streamlit as st
 
-from components.cards import render_kpi_card, render_recommendation_card
+from components.cards import render_kpi_card, render_recommendation_card, render_page_header
 from components.charts import render_emissions_bar_chart, render_score_radar, render_score_bars
 from services.calculations import build_recommendations
 
 
 def render_score():
-    st.markdown("## Score AeroGreen")
+    render_page_header(
+        "Score AeroGreen",
+        "Lecture synthétique du pré-audit avec score global, grade, risques et analyse par pilier.",
+        "Scoring"
+    )
 
     if not st.session_state.diagnostic_done or not st.session_state.diagnostic_result:
         st.warning("Aucun diagnostic avancé n’a encore été calculé.")
@@ -47,10 +51,8 @@ def render_score():
     st.markdown("## Lecture par pilier")
 
     left, right = st.columns([1, 1])
-
     with left:
         render_score_radar(result["score_rows"])
-
     with right:
         render_score_bars(result["score_rows"])
 

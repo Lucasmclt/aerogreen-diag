@@ -1,6 +1,6 @@
 import streamlit as st
 
-from components.cards import render_progress, render_section_intro
+from components.cards import render_progress, render_section_intro, render_page_header
 from services.calculations import compute_advanced_score
 
 
@@ -38,8 +38,11 @@ def render_nav_buttons():
 
 
 def render_diagnostic_wizard():
-    st.markdown("## Diagnostic avancé")
-    st.caption("Questionnaire multi-étapes pour structurer la collecte de données avant scoring.")
+    render_page_header(
+        "Diagnostic avancé",
+        "Questionnaire multi-étapes pour structurer la collecte de données avant scoring et génération du rapport premium.",
+        "Collecte"
+    )
 
     render_progress(st.session_state.wizard_step, TOTAL_STEPS)
 

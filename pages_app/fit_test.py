@@ -1,11 +1,15 @@
 import streamlit as st
 
+from components.cards import render_page_header
 from services.calculations import compute_fit_score, get_fit_result
 
 
 def render_fit_test():
-    st.markdown("## Test rapide d’adéquation")
-    st.caption("Qualification commerciale en moins de deux minutes.")
+    render_page_header(
+        "Test rapide d’adéquation",
+        "Qualification commerciale en moins de deux minutes pour vérifier si AeroGreen répond à un besoin réel.",
+        "Qualification"
+    )
 
     if not st.session_state.workspace_created:
         st.warning("Conseil : crée d’abord un workspace client dans l’accueil. Tu peux quand même continuer.")

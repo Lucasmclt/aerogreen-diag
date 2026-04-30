@@ -1,6 +1,17 @@
 import streamlit as st
 
 
+def render_page_header(title: str, subtitle: str, tag: str | None = None):
+    tag_html = f"<div class='page-header-tag'>{tag}</div>" if tag else ""
+    st.markdown(f"""
+    <div class='page-header'>
+        {tag_html}
+        <h2>{title}</h2>
+        <div class='page-header-sub'>{subtitle}</div>
+    </div>
+    """, unsafe_allow_html=True)
+
+
 def render_kpi_card(title: str, value: str, subtitle: str, color: str = "#111827"):
     st.markdown(f"""
     <div class='card'>
