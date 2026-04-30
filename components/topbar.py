@@ -6,8 +6,8 @@ from services.calculations import get_fit_result, get_grade
 def render_topbar():
     page = st.session_state.page
 
-    workspace_name = st.session_state.company_name if st.session_state.workspace_created else "Aucun workspace"
-    workspace_status = "Actif" if st.session_state.workspace_created else "À créer"
+    workspace_name = st.session_state.company_name if st.session_state.workspace_created else ("Mode invité" if not st.session_state.authenticated else "Aucun espace client")
+    workspace_status = "Actif" if st.session_state.workspace_created else ("Gratuit" if not st.session_state.authenticated else "À créer")
     workspace_status_class = "success" if st.session_state.workspace_created else "warning"
 
     if st.session_state.fit_test_done:

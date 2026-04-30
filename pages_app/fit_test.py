@@ -71,6 +71,22 @@ def render_fit_test():
         """, unsafe_allow_html=True)
 
     if st.session_state.fit_test_done:
-        if st.button("Continuer vers le diagnostic avancé"):
-            st.session_state.page = "Diagnostic avancé"
-            st.rerun()
+        if st.session_state.authenticated:
+            if st.button("Continuer vers le diagnostic avancé"):
+                st.session_state.page = "Diagnostic avancé"
+                st.rerun()
+        else:
+            st.markdown("""
+            <div class='card'>
+                <div class='section-title'>Étape suivante</div>
+                <div class='feature-title'>Diagnostic avancé réservé à l’espace professionnel</div>
+                <div class='feature-text'>
+                    Vous pouvez utiliser le résultat du test rapide gratuitement. Pour enregistrer un dossier,
+                    accéder au questionnaire complet et générer le rapport premium, connectez-vous avec un email professionnel.
+                </div>
+            </div>
+            """, unsafe_allow_html=True)
+
+            if st.button("Créer un compte / se connecter"):
+                st.session_state.page = "Connexion"
+                st.rerun()

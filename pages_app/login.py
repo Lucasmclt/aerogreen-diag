@@ -6,19 +6,19 @@ from services.database import create_user, authenticate_user
 def render_login():
     st.markdown("""
     <div class='hero'>
-        <div class='hero-label'>Secure SaaS Access</div>
-        <h1>Connectez-vous à votre espace AeroGreen.</h1>
+        <div class='hero-label'>Accès professionnel</div>
+        <h1>Connectez-vous pour lancer le diagnostic avancé.</h1>
         <p>
-            Vos pré-audits sont enregistrés dans une base SQLite locale avec mots de passe hashés,
-            requêtes paramétrées et séparation des données par utilisateur.
+            Le test rapide est accessible sans compte. L’espace professionnel permet d’enregistrer les audits,
+            de générer des rapports premium et de suivre l’historique des entreprises analysées.
         </p>
     </div>
     """, unsafe_allow_html=True)
 
-    tab_login, tab_register = st.tabs(["Connexion", "Créer un compte"])
+    tab_login, tab_register = st.tabs(["Connexion", "Créer un compte professionnel"])
 
     with tab_login:
-        email = st.text_input("Email", key="login_email")
+        email = st.text_input("Email professionnel", key="login_email")
         password = st.text_input("Mot de passe", type="password", key="login_password")
 
         if st.button("Se connecter"):
@@ -28,6 +28,7 @@ def render_login():
                 st.session_state.user_id = user["id"]
                 st.session_state.user_email = user["email"]
                 st.success("Connexion réussie.")
+                st.session_state.page = "Diagnostic avancé" if st.session_state.fit_test_done else "Dashboard"
                 st.rerun()
             else:
                 st.error("Identifiants incorrects.")
@@ -39,7 +40,9 @@ def render_login():
 
         st.caption("Minimum recommandé : 10 caractères. Les mots de passe ne sont jamais stockés en clair.")
 
-        if st.button("Créer le compte"):
+        if st.button("Créer le compte professionnel"):
+            if not new_email.strip().lower().endswith((".fr", ".com", ".eu", ".org", ".net", ".aero")):
+                st.warning("L’email semble inhabituel. Vous pouvez continuer, mais privilégiez un email professionnel.")
             if new_password != confirm_password:
                 st.error("Les mots de passe ne correspondent pas.")
             else:

@@ -6,8 +6,8 @@ from components.sidebar import render_sidebar
 from components.topbar import render_topbar
 from pages_app.home import render_home
 from pages_app.login import render_login
-from pages_app.dashboard import render_dashboard
 from pages_app.fit_test import render_fit_test
+from pages_app.dashboard import render_dashboard
 from pages_app.diagnostic_wizard import render_diagnostic_wizard
 from pages_app.score import render_score
 from pages_app.report import render_report
@@ -21,10 +21,13 @@ st.set_page_config(
 )
 
 
+PUBLIC_PAGES = ["Accueil", "Test rapide", "Connexion"]
+
+
 def init_session_state():
     defaults = {
         "page": "Accueil",
-        
+
         # SaaS workspace
         "workspace_created": False,
         "company_name": "",
@@ -59,32 +62,50 @@ def init_session_state():
             st.session_state[key] = value
 
 
+def require_auth():
+    if not st.session_state.authenticated:
+        st.session_state.page = "Connexion"
+        return False
+    return True
+
+
 def main():
     init_db()
     init_session_state()
     load_css()
-
-    if not st.session_state.authenticated:
-        render_login()
-        return
-
     render_sidebar()
-    render_topbar()
 
     page = st.session_state.page
 
+    if page != "Connexion":
+        render_topbar()
+
     if page == "Accueil":
         render_home()
-    elif page == "Dashboard":
-        render_dashboard()
     elif page == "Test rapide":
         render_fit_test()
+    elif page == "Connexion":
+        render_login()
+    elif page == "Dashboard":
+        if require_auth():
+            render_dashboard()
+        else:
+            render_login()
     elif page == "Diagnostic avancé":
-        render_diagnostic_wizard()
+        if require_auth():
+            render_diagnostic_wizard()
+        else:
+            render_login()
     elif page == "Score":
-        render_score()
+        if require_auth():
+            render_score()
+        else:
+            render_login()
     elif page == "Rapport":
-        render_report()
+        if require_auth():
+            render_report()
+        else:
+            render_login()
     else:
         st.session_state.page = "Accueil"
         render_home()

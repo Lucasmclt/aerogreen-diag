@@ -16,6 +16,17 @@ def render_home():
     </div>
     """, unsafe_allow_html=True)
 
+
+    cta_a, cta_b = st.columns([1, 1])
+    with cta_a:
+        if st.button("Lancer le test rapide gratuit"):
+            st.session_state.page = "Test rapide"
+            st.rerun()
+    with cta_b:
+        if st.button("Accéder à l’espace professionnel"):
+            st.session_state.page = "Connexion"
+            st.rerun()
+
     st.markdown("## Pourquoi le projet est fort")
     c1, c2, c3 = st.columns(3)
     with c1:
