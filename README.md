@@ -74,3 +74,8 @@ Pour une production réelle, ajoutez impérativement :
 ## V13
 - Topbar réécrite en composants Streamlit natifs
 - Suppression du risque d’affichage des balises HTML en texte brut
+
+
+## V14
+- Correction de lisibilité du bouton actif dans la topbar
+- Forçage de la couleur du texte blanc sur le bouton primaire

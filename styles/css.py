@@ -1501,5 +1501,52 @@ def load_css():
         }
     }
 
+    
+    /* V14 TOPBAR FIX */
+    .native-topbar-shell {
+        position: relative;
+        z-index: 5;
+    }
+
+    .native-topbar-shell .stButton button[kind="primary"],
+    .native-topbar-shell .stButton button[kind="primary"] * {
+        color: #ffffff !important;
+        -webkit-text-fill-color: #ffffff !important;
+        fill: #ffffff !important;
+    }
+
+    .native-topbar-shell .stButton button[kind="secondary"],
+    .native-topbar-shell .stButton button[kind="secondary"] * {
+        color: #4f46e5 !important;
+        -webkit-text-fill-color: #4f46e5 !important;
+    }
+
+    .native-topbar-shell .stButton button[kind="primary"] {
+        background: #0b1534 !important;
+        border: 1px solid #0b1534 !important;
+        box-shadow: 0 16px 30px rgba(11,21,52,.16) !important;
+    }
+
+    .native-topbar-shell .stButton button[kind="secondary"] {
+        background: rgba(99,102,241,.08) !important;
+        border: 1px solid rgba(99,102,241,.18) !important;
+    }
+
+    .native-topbar-shell .stButton button {
+        min-height: 58px;
+    }
+
+    .native-topbar-shell .stButton {
+        margin-top: 0.1rem;
+    }
+
+    .topbar-brand-name {
+        color: #0f172a !important;
+    }
+
+    .topbar-brand-sub {
+        color: #64748b !important;
+    }
+
     </style>
     """, unsafe_allow_html=True)
