@@ -1,57 +1,72 @@
 import streamlit as st
 from datetime import datetime
 
-from services.calculations import get_fit_result
-from services.pdf_generator import create_pdf_bytes
+from services.calculations import build_recommendations, get_fit_result
+from services.pdf_generator import create_premium_pdf_bytes
 
 
 def render_report():
-    st.markdown("## Rapport de pré-audit")
+    st.markdown("## Rapport premium")
 
-    if st.session_state.last_total_t is None or st.session_state.last_df is None:
-        st.warning("Aucun diagnostic n’a encore été généré. Lance d’abord le pré-diagnostic.")
+    if not st.session_state.diagnostic_done or not st.session_state.diagnostic_result:
+        st.warning("Aucun diagnostic avancé n’a encore été généré.")
+        if st.button("Aller au diagnostic avancé"):
+            st.session_state.page = "Diagnostic avancé"
+            st.rerun()
         return
 
-    total_tonnes = st.session_state.last_total_t
-    df = st.session_state.last_df
-    maturity = st.session_state.last_maturity
+    result = st.session_state.diagnostic_result
+    recos = build_recommendations(st.session_state.diagnostic_inputs, result)
 
     fit_score = st.session_state.fit_score
-    fit_result = st.session_state.fit_result if st.session_state.fit_result else "Test rapide non réalisé"
+    fit_result = st.session_state.fit_result or get_fit_result(fit_score)[0]
 
-    label, color = get_fit_result(fit_score)
+    company = {
+        "company_name": st.session_state.company_name or "Entreprise non renseignée",
+        "company_city": st.session_state.company_city or "Non renseignée",
+        "company_sector": st.session_state.company_sector or "Non renseigné",
+        "client_reference": st.session_state.client_reference or "N/A",
+    }
 
     st.markdown(f"""
     <div class='card'>
-        <div class='section-title'>Synthèse exportable</div>
-        <div style='font-size:1.1rem; font-weight:700;'>
-            Empreinte estimée : {total_tonnes:.2f} tCO₂e
+        <div class='section-title'>Synthèse rapport</div>
+        <div class='feature-title'>{company['company_name']}</div>
+        <div class='feature-text'>
+            Score global : <strong>{result['global_score']:.0f}/100</strong> ·
+            Grade : <strong>{result['grade']}</strong> ·
+            Empreinte estimée : <strong>{result['total_tonnes']:.2f} tCO₂e</strong>
         </div>
-        <div style='font-size:1.1rem; font-weight:700;'>
-            Maturité RSE numérique : {maturity:.0f}%
+        <br>
+        <div class='feature-text'>
+            Le rapport PDF contient la synthèse exécutive, les scores par pilier,
+            le détail des émissions et les recommandations prioritaires.
         </div>
-        <div style='font-size:1.1rem; font-weight:700; color:{color};'>
-            Adéquation AeroGreen : {fit_score:.0f}% — {label}
-        </div>
-        <p class='feature-text'>
-            Ce rapport constitue une base de discussion. Il ne remplace pas un audit réglementaire complet,
-            mais permet d’identifier rapidement les principaux leviers d’action.
-        </p>
     </div>
     """, unsafe_allow_html=True)
 
-    pdf_bytes = create_pdf_bytes(
-        total_tonnes=total_tonnes,
-        df_detail=df,
-        maturity_score=maturity,
+    pdf_bytes = create_premium_pdf_bytes(
+        company=company,
+        result=result,
+        recommendations=recos,
         fit_score=fit_score,
-        fit_result=fit_result
+        fit_result=fit_result,
     )
 
     st.download_button(
-        label="Télécharger le rapport PDF",
+        label="Télécharger le rapport premium PDF",
         data=pdf_bytes,
-        file_name=f"AeroGreen_PreAudit_{datetime.now().strftime('%Y%m%d')}.pdf",
+        file_name=f"AeroGreen_Premium_{datetime.now().strftime('%Y%m%d')}.pdf",
         mime="application/pdf",
         use_container_width=True
     )
+
+    st.markdown("### Aperçu des recommandations")
+    for reco in recos:
+        st.markdown(f"""
+        <div class='card-soft'>
+            <div class='section-title'>{reco['priority']}</div>
+            <strong>{reco['title']}</strong>
+            <div class='feature-text'>{reco['text']}</div>
+        </div>
+        """, unsafe_allow_html=True)

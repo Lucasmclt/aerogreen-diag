@@ -1,42 +1,61 @@
 import streamlit as st
 
-from services.calculations import get_fit_result
+from services.calculations import get_fit_result, get_grade
+
+
+def _nav_button(label: str, page: str):
+    if st.button(label):
+        st.session_state.page = page
+        st.rerun()
 
 
 def render_sidebar():
     with st.sidebar:
         st.markdown("## ✈️ AeroGreen")
-        st.caption("Pré-audit carbone numérique pour sous-traitants aéronautiques")
+        st.caption("ESG digital pre-audit platform")
+
+        if st.session_state.workspace_created:
+            st.markdown(f"""
+            <div class='card-soft'>
+                <div class='section-title'>Workspace</div>
+                <strong>{st.session_state.company_name}</strong>
+                <div class='feature-text small'>{st.session_state.company_city}</div>
+            </div>
+            """, unsafe_allow_html=True)
+        else:
+            st.caption("Aucun workspace client créé.")
 
         st.divider()
 
-        if st.button("Accueil"):
-            st.session_state.page = "Accueil"
-
-        if st.button("Test rapide"):
-            st.session_state.page = "Test rapide"
-
-        if st.button("Diagnostic"):
-            st.session_state.page = "Diagnostic"
-
-        if st.button("Rapport"):
-            st.session_state.page = "Rapport"
+        _nav_button("Accueil", "Accueil")
+        _nav_button("Test rapide", "Test rapide")
+        _nav_button("Diagnostic avancé", "Diagnostic avancé")
+        _nav_button("Score", "Score")
+        _nav_button("Rapport", "Rapport")
 
         st.divider()
 
         if st.session_state.fit_test_done:
             result_label, result_color = get_fit_result(st.session_state.fit_score)
-
             st.markdown(f"""
             <div class='card-soft'>
                 <div class='section-title'>Éligibilité</div>
-                <div style='font-weight:700; color:{result_color};'>
+                <div style='font-weight:800; font-size:1.4rem; color:{result_color};'>
                     {st.session_state.fit_score:.0f}%
                 </div>
-                <div style='font-size:0.85rem; color:#6b7280;'>
-                    {result_label}
-                </div>
+                <div class='feature-text small'>{result_label}</div>
             </div>
             """, unsafe_allow_html=True)
-        else:
-            st.caption("Commence par le test rapide pour qualifier l’entreprise.")
+
+        if st.session_state.diagnostic_done and st.session_state.diagnostic_result:
+            score = st.session_state.diagnostic_result["global_score"]
+            grade, color = get_grade(score)
+            st.markdown(f"""
+            <div class='card-soft'>
+                <div class='section-title'>Score global</div>
+                <div style='font-weight:900; font-size:1.7rem; color:{color};'>
+                    {grade} · {score:.0f}/100
+                </div>
+                <div class='feature-text small'>Pré-audit avancé complété</div>
+            </div>
+            """, unsafe_allow_html=True)
