@@ -101,7 +101,7 @@ st.markdown("""
     }
     /* Sous-titres */
     h3 {
-        color: #2d3748;
+        color: #1a365d !important;
         font-size: 1.2rem !important;
         font-weight: 600 !important;
         margin-bottom: 1rem !important;
