@@ -3,7 +3,7 @@ import pandas as pd
 from fpdf import FPDF
 from datetime import datetime
 
-# --- CONFIG PAGE ---
+# --- CONFIG ---
 st.set_page_config(page_title="AeroGreen", layout="wide")
 
 # --- PDF ---
@@ -40,7 +40,7 @@ def get_score_color(score):
     else:
         return "#10b981"
 
-# --- CSS ---
+# --- CSS ULTRA CLEAN ---
 st.markdown("""
 <style>
 .stApp {
@@ -48,13 +48,18 @@ st.markdown("""
     font-family: Inter, -apple-system, sans-serif;
 }
 
+.block-container {
+    padding-top: 2rem;
+}
+
+/* HEADER */
 .main-title {
     text-align: center;
-    padding: 3rem 1rem 2rem;
+    padding: 2rem 1rem 2rem;
 }
 
 .main-title h1 {
-    font-size: 2.8rem;
+    font-size: 2.6rem;
     font-weight: 700;
 }
 
@@ -62,22 +67,33 @@ st.markdown("""
     color: #6b7280;
 }
 
-.card {
+/* SECTION LABEL */
+.section-title {
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    color: #6b7280;
+    margin-bottom: 0.8rem;
+}
+
+/* VISUAL CARD (header only) */
+.card-header {
+    background: white;
+    border-radius: 14px;
+    padding: 16px;
+    border: 1px solid #e5e7eb;
+    margin-bottom: 0.8rem;
+}
+
+/* KPI CARD */
+.kpi-card {
     background: white;
     border-radius: 16px;
     padding: 20px;
     border: 1px solid #e5e7eb;
     box-shadow: 0 6px 20px rgba(0,0,0,0.04);
-    margin-bottom: 1.5rem;
 }
 
-.section-title {
-    font-size: 0.8rem;
-    text-transform: uppercase;
-    color: #6b7280;
-    margin-bottom: 10px;
-}
-
+/* KPI TEXT */
 .kpi {
     font-size: 2.2rem;
     font-weight: 600;
@@ -87,10 +103,29 @@ st.markdown("""
     color: #6b7280;
 }
 
+/* INPUTS */
+.stNumberInput input {
+    border-radius: 10px !important;
+    border: 1px solid #e5e7eb !important;
+    background: #fafafa !important;
+}
+
+/* SPACING */
+.stNumberInput, .stCheckbox {
+    margin-bottom: 0.5rem;
+}
+
+/* BUTTON */
 .stDownloadButton button {
     background: black;
     color: white;
     border-radius: 12px;
+}
+
+/* TABLE */
+[data-testid="stDataFrame"] {
+    border-radius: 12px;
+    border: 1px solid #e5e7eb;
 }
 </style>
 """, unsafe_allow_html=True)
@@ -107,27 +142,21 @@ st.markdown("""
 col1, col2, col3 = st.columns(3)
 
 with col1:
-    st.markdown("<div class='card'>", unsafe_allow_html=True)
-    st.markdown("<div class='section-title'>Infrastructure</div>", unsafe_allow_html=True)
+    st.markdown("<div class='card-header'><div class='section-title'>Infrastructure</div></div>", unsafe_allow_html=True)
     nb_laptops = st.number_input("Laptops", 0, 5000, 0)
     nb_stations = st.number_input("Workstations", 0, 5000, 0)
     nb_ecrans = st.number_input("Displays", 0, 5000, 0)
-    st.markdown("</div>", unsafe_allow_html=True)
 
 with col2:
-    st.markdown("<div class='card'>", unsafe_allow_html=True)
-    st.markdown("<div class='section-title'>Data</div>", unsafe_allow_html=True)
+    st.markdown("<div class='card-header'><div class='section-title'>Data</div></div>", unsafe_allow_html=True)
     stockage_plm = st.number_input("Storage (TB)", 0.0, 5000.0, 0.0)
     st.caption("Primary emissions driver")
-    st.markdown("</div>", unsafe_allow_html=True)
 
 with col3:
-    st.markdown("<div class='card'>", unsafe_allow_html=True)
-    st.markdown("<div class='section-title'>Governance</div>", unsafe_allow_html=True)
+    st.markdown("<div class='card-header'><div class='section-title'>Governance</div></div>", unsafe_allow_html=True)
     iso_14001 = st.checkbox("ISO 14001")
     gestion_deee = st.checkbox("E-waste")
     charte_achats = st.checkbox("Responsible sourcing")
-    st.markdown("</div>", unsafe_allow_html=True)
 
 # --- CALCUL ---
 FACTEURS = {'laptop': 193, 'fixe': 350, 'ecran': 200, 'stock': 0.24}
@@ -146,12 +175,11 @@ color_maturity = get_score_color(maturite)
 
 # --- KPI ---
 st.markdown("## Overview")
-
 k1, k2 = st.columns(2)
 
 with k1:
     st.markdown(f"""
-    <div class='card'>
+    <div class='kpi-card'>
         <div class='section-title'>Total emissions</div>
         <div class='kpi' style='color:{color_emissions}'>{total_t:.2f} tCO₂e</div>
         <div class='kpi-sub'>Lower is better</div>
@@ -160,7 +188,7 @@ with k1:
 
 with k2:
     st.markdown(f"""
-    <div class='card'>
+    <div class='kpi-card'>
         <div class='section-title'>Maturity</div>
         <div class='kpi' style='color:{color_maturity}'>{maturite:.0f}%</div>
         <div class='kpi-sub'>Higher is better</div>
@@ -175,9 +203,8 @@ data = {
 
 df = pd.DataFrame(data)
 
-st.markdown("<div class='card'>", unsafe_allow_html=True)
+st.markdown("## Breakdown")
 st.dataframe(df, use_container_width=True, hide_index=True)
-st.markdown("</div>", unsafe_allow_html=True)
 
 # --- BAR CHART ---
 if total_kg > 0:
@@ -194,11 +221,7 @@ elif maturite < 66:
 else:
     reco = "Strong maturity. Focus on fine-tuning."
 
-st.markdown(f"""
-<div class='card'>
-<p>{reco}</p>
-</div>
-""", unsafe_allow_html=True)
+st.markdown(f"<div class='kpi-card'><p>{reco}</p></div>", unsafe_allow_html=True)
 
 # --- PDF ---
 st.markdown("---")
