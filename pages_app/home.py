@@ -57,7 +57,7 @@ def render_home():
     <div class='trust-strip'>
         <div><strong>Sans compte</strong><span>Test rapide accessible immédiatement</span></div>
         <div><strong>Compte pro</strong><span>Historique, scoring et rapport PDF</span></div>
-        <div><strong>Local</strong><span>Base SQLite pour vos audits</span></div>
+        <div><strong>Historique</strong><span>Vos diagnostics sauvegardés</span></div>
     </div>
     """, unsafe_allow_html=True)
 

@@ -44,3 +44,9 @@ Pour une production réelle, ajoutez impérativement :
 - Boutons d’accueil plus légers
 - Cartes d’une même ligne harmonisées en hauteur
 - Sidebar nettoyée pour retirer l’espace avant les libellés
+
+
+## V8
+- Navigation sidebar corrigée avec boutons réels
+- Suppression des textes non orientés client dans l’interface
+- Boutons et cartes harmonisés

@@ -29,7 +29,7 @@ def _build_history_df():
 def render_dashboard():
     render_page_header(
         "Dashboard exécutif",
-        "Vue d’ensemble persistante des pré-audits enregistrés dans votre base locale.",
+        "Vue d’ensemble de vos diagnostics enregistrés.",
         "Executive view"
     )
 
@@ -41,7 +41,7 @@ def render_dashboard():
 
     c1, c2, c3, c4 = st.columns(4)
     with c1:
-        render_kpi_card("Dossiers enregistrés", f"{total_audits}", "Persistés en base SQLite", "#6366f1")
+        render_kpi_card("Dossiers enregistrés", f"{total_audits}", "Dossiers sauvegardés", "#6366f1")
     with c2:
         render_kpi_card("Score moyen", f"{avg_score:.0f}/100", "Maturité moyenne", "#10b981" if avg_score >= 70 else "#f59e0b" if avg_score >= 40 else "#ef4444")
     with c3:
@@ -63,8 +63,8 @@ def render_dashboard():
         )
     with c:
         render_feature_card(
-            "Persistance fiable",
-            "Historique stocké localement avec séparation par utilisateur et requêtes paramétrées."
+            "Historique sécurisé",
+            "Retrouvez vos diagnostics enregistrés et suivez l’évolution de vos dossiers dans le temps."
         )
 
     st.markdown("## Historique des audits")

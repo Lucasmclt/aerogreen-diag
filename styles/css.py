@@ -1086,5 +1086,46 @@ def load_css():
         50% { transform: translateY(-10px); }
         100% { transform: translateY(0px); }
     }
+    
+    /* V8 SIDEBAR NAV BUTTONS */
+    .nav-button-wrap {
+        margin-bottom: 8px;
+    }
+
+    .nav-button-wrap button {
+        justify-content: flex-start !important;
+        text-align: left !important;
+        border-radius: 14px !important;
+        padding: 0.62rem 0.78rem !important;
+        background: rgba(255,255,255,.86) !important;
+        border: 1px solid var(--line) !important;
+        box-shadow: none !important;
+        color: var(--text) !important;
+        font-weight: 750 !important;
+        width: 100% !important;
+    }
+
+    .nav-button-wrap button:hover {
+        background: #f8fafc !important;
+        border-color: rgba(99,102,241,.28) !important;
+        transform: translateY(-1px);
+    }
+
+    .nav-button-wrap.active button {
+        background: linear-gradient(180deg, rgba(99,102,241,.12), rgba(99,102,241,.05)) !important;
+        border-color: rgba(99,102,241,.34) !important;
+        color: #4f46e5 !important;
+        box-shadow: 0 8px 18px rgba(99,102,241,.10) !important;
+    }
+
+    [data-testid="stSidebar"] .stButton button {
+        width: 100% !important;
+    }
+
+    /* Homepage CTA: pill, not square */
+    .stButton button[kind="secondary"] {
+        border-radius: 999px !important;
+    }
+
     </style>
     """, unsafe_allow_html=True)

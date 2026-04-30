@@ -87,7 +87,7 @@ def render_score():
                 inputs=st.session_state.diagnostic_inputs,
                 result=result,
             )
-            st.success(f"Audit enregistré dans la base locale. ID dossier : {audit_id}.")
+            st.success(f"Audit enregistré dans la espace sécurisé. ID dossier : {audit_id}.")
     with cta2:
         if st.button("Générer le rapport"):
             st.session_state.page = "Rapport"

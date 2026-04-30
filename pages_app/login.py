@@ -9,8 +9,8 @@ def render_login():
         <div class='hero-label'>Accès professionnel</div>
         <h1>Connectez-vous pour lancer le diagnostic avancé.</h1>
         <p>
-            Le test rapide est accessible sans compte. L’espace professionnel permet d’enregistrer les audits,
-            de générer des rapports premium et de suivre l’historique des entreprises analysées.
+            Le test rapide est accessible sans compte. L’espace professionnel permet d’enregistrer vos dossiers,
+            de suivre vos diagnostics et de générer vos rapports premium.
         </p>
     </div>
     """, unsafe_allow_html=True)
@@ -38,11 +38,11 @@ def render_login():
         new_password = st.text_input("Mot de passe", type="password", key="register_password")
         confirm_password = st.text_input("Confirmer le mot de passe", type="password", key="register_confirm")
 
-        st.caption("Minimum recommandé : 10 caractères. Les mots de passe ne sont jamais stockés en clair.")
+        st.caption("Minimum recommandé : 10 caractères. Votre accès est protégé.")
 
         if st.button("Créer le compte professionnel"):
             if not new_email.strip().lower().endswith((".fr", ".com", ".eu", ".org", ".net", ".aero")):
-                st.warning("L’email semble inhabituel. Vous pouvez continuer, mais privilégiez un email professionnel.")
+                st.warning("Nous recommandons d’utiliser une adresse professionnelle.")
             if new_password != confirm_password:
                 st.error("Les mots de passe ne correspondent pas.")
             else:
