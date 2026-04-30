@@ -1,31 +1,31 @@
-# AeroGreen SaaS MVP
+# AeroGreen V4 — Secure Local SaaS Demo
 
-## Installation
+## Lancement
 
 ```bash
 pip install -r requirements.txt
 streamlit run app.py
 ```
 
-## Structure
+## Nouveautés V4
 
-- `app.py` : point d’entrée
-- `pages_app/` : pages SaaS
-- `components/` : UI réutilisable
-- `services/` : calculs et PDF
-- `styles/` : CSS global
+- Authentification locale avec email / mot de passe
+- Mots de passe hashés avec PBKDF2-HMAC-SHA256 + sel unique
+- Base SQLite locale dans `data/aerogreen.db`
+- Requêtes SQL paramétrées
+- Historique des audits persistant par utilisateur
+- Dashboard exécutif alimenté par la base
+- Suppression d’audits depuis le dashboard
+- Interface en vouvoiement
 
-## Parcours
+## Important sécurité
 
-1. Accueil + workspace client
-2. Test rapide d’adéquation
-3. Diagnostic avancé multi-étapes
-4. Score global + graphes
-5. Rapport PDF premium
-
-
-## V3
-- landing page plus forte
-- dashboard exécutif
-- historique d'audits
-- posture plus jury / investisseur
+Cette version est fiable pour une démonstration locale ou un MVP étudiant.
+Pour une production réelle, ajoutez impérativement :
+- HTTPS
+- gestion avancée des sessions
+- politique de mot de passe plus stricte
+- sauvegardes chiffrées
+- chiffrement au repos si données sensibles
+- logs d’audit
+- déploiement derrière un serveur sécurisé

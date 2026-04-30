@@ -3,6 +3,7 @@ import streamlit as st
 from components.cards import render_kpi_card, render_recommendation_card, render_page_header
 from components.charts import render_emissions_bar_chart, render_score_radar, render_score_bars
 from services.calculations import build_recommendations
+from services.database import save_audit
 
 
 def render_score():
@@ -70,18 +71,23 @@ def render_score():
     cta1, cta2 = st.columns(2)
     with cta1:
         if st.button("Enregistrer dans le dashboard"):
-            entry = {
-                "Entreprise": st.session_state.company_name or "Entreprise non renseignée",
-                "Ville": st.session_state.company_city or "N/A",
-                "Score": round(result["global_score"], 0),
-                "Grade": result["grade"],
-                "Empreinte": round(result["total_tonnes"], 2),
-                "Date": __import__("datetime").datetime.now().strftime("%Y-%m-%d"),
+            company = {
+                "company_name": st.session_state.company_name or "Entreprise non renseignée",
+                "company_city": st.session_state.company_city or "N/A",
+                "company_sector": st.session_state.company_sector or "Non renseigné",
+                "client_reference": st.session_state.client_reference or "N/A",
+                "contact_name": st.session_state.contact_name or "",
             }
-            history = st.session_state.get("audit_history", [])
-            history.append(entry)
-            st.session_state.audit_history = history
-            st.success("Audit ajouté au dashboard exécutif.")
+
+            audit_id = save_audit(
+                user_id=st.session_state.user_id,
+                company=company,
+                fit_score=st.session_state.fit_score,
+                fit_result=st.session_state.fit_result,
+                inputs=st.session_state.diagnostic_inputs,
+                result=result,
+            )
+            st.success(f"Audit enregistré dans la base locale. ID dossier : {audit_id}.")
     with cta2:
         if st.button("Générer le rapport"):
             st.session_state.page = "Rapport"

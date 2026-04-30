@@ -26,12 +26,12 @@ def render_home():
     with c2:
         render_feature_card(
             "Offre crédible",
-            "Tu proposes une première couche d’analyse moins coûteuse qu’un audit Big Four, mais plus structurée qu’un simple questionnaire brut."
+            "Vous proposez une première couche d’analyse moins coûteuse qu’un audit Big Four, mais plus structurée qu’un simple questionnaire brut."
         )
     with c3:
         render_feature_card(
             "Démonstration produit",
-            "Le MVP montre ta capacité à traduire une norme complexe en expérience utilisateur claire et vendable."
+            "Le MVP montre votre capacité à traduire une norme complexe en expérience utilisateur claire et vendable."
         )
 
     st.markdown("## Ce que voit un jury ou un investisseur")

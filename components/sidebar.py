@@ -11,9 +11,17 @@ def render_sidebar():
         st.markdown("""
         <div class='sidebar-brand'>
             <div class='sidebar-brand-title'>✈️ AeroGreen</div>
-            <div class='sidebar-brand-sub'>Pré-audit carbone numérique B2B pour les sous-traitants aéronautiques.</div>
+            <div class='sidebar-brand-sub'>Pré-audit carbone numérique B2B pour sous-traitants aéronautiques.</div>
         </div>
         """, unsafe_allow_html=True)
+
+        st.caption(f"Connecté : {st.session_state.user_email}")
+
+        if st.button("Déconnexion"):
+            st.session_state.authenticated = False
+            st.session_state.user_id = None
+            st.session_state.user_email = ""
+            st.rerun()
 
         if st.session_state.workspace_created:
             st.markdown(f"""
