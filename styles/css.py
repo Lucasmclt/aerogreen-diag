@@ -1548,5 +1548,151 @@ def load_css():
         color: #64748b !important;
     }
 
+    
+    /* V15 TOTAL TOPBAR REDESIGN */
+    .v15-topbar-card {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 18px;
+        padding: 18px 20px;
+        border-radius: 24px;
+        background:
+            radial-gradient(circle at top left, rgba(99,102,241,.12), transparent 28%),
+            radial-gradient(circle at right center, rgba(16,185,129,.10), transparent 24%),
+            linear-gradient(180deg, rgba(255,255,255,.94), rgba(248,250,252,.98));
+        border: 1px solid var(--line);
+        box-shadow: 0 14px 32px rgba(15,23,42,.06);
+        margin-bottom: 0.85rem;
+        animation: fadeIn .25s ease-in;
+    }
+
+    .v15-topbar-left {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+        min-width: 0;
+    }
+
+    .v15-brand-mark {
+        width: 44px;
+        height: 44px;
+        border-radius: 16px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: linear-gradient(135deg, rgba(99,102,241,.16), rgba(16,185,129,.14));
+        box-shadow: inset 0 1px 0 rgba(255,255,255,.65);
+        font-size: 1.15rem;
+        flex-shrink: 0;
+    }
+
+    .v15-brand-name {
+        font-size: 1.14rem;
+        font-weight: 900;
+        color: #0f172a;
+        letter-spacing: -.03em;
+        line-height: 1.1;
+    }
+
+    .v15-brand-sub {
+        margin-top: 4px;
+        font-size: .86rem;
+        color: #64748b;
+        line-height: 1.2;
+    }
+
+    .v15-topbar-right {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        flex-wrap: wrap;
+        justify-content: flex-end;
+    }
+
+    .v15-chip {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        padding: 9px 13px;
+        border-radius: 999px;
+        font-size: .82rem;
+        font-weight: 800;
+        border: 1px solid transparent;
+        white-space: nowrap;
+    }
+
+    .v15-chip.muted {
+        background: rgba(241,245,249,.92);
+        color: #475569;
+        border-color: rgba(226,232,240,.95);
+    }
+
+    .v15-chip.accent {
+        background: rgba(245,158,11,.10);
+        color: #b45309;
+        border-color: rgba(245,158,11,.18);
+    }
+
+    /* Clean button system for top navigation and other CTAs */
+    .stButton button {
+        border-radius: 18px !important;
+        min-height: 56px !important;
+        padding: 0.86rem 1.05rem !important;
+        font-weight: 800 !important;
+        transition: all .18s ease !important;
+        box-shadow: 0 8px 20px rgba(15,23,42,.04) !important;
+    }
+
+    .stButton button:hover {
+        transform: translateY(-1px);
+    }
+
+    /* Active button: readable, not dark-on-dark */
+    .stButton button[kind="primary"] {
+        background: linear-gradient(180deg, rgba(224,231,255,.95), rgba(238,242,255,.98)) !important;
+        border: 1px solid rgba(129,140,248,.45) !important;
+        color: #1e293b !important;
+        box-shadow: 0 14px 30px rgba(99,102,241,.10) !important;
+    }
+
+    .stButton button[kind="primary"] *,
+    .stButton button[kind="primary"] p,
+    .stButton button[kind="primary"] span,
+    .stButton button[kind="primary"] div {
+        color: #1e293b !important;
+        -webkit-text-fill-color: #1e293b !important;
+    }
+
+    .stButton button[kind="secondary"] {
+        background: rgba(255,255,255,.94) !important;
+        border: 1px solid rgba(203,213,225,.9) !important;
+        color: #334155 !important;
+    }
+
+    .stButton button[kind="secondary"] *,
+    .stButton button[kind="secondary"] p,
+    .stButton button[kind="secondary"] span,
+    .stButton button[kind="secondary"] div {
+        color: #334155 !important;
+        -webkit-text-fill-color: #334155 !important;
+    }
+
+    /* Make top nav feel like a real topbar row */
+    [data-testid="stHorizontalBlock"] > div:has(button[key^="v15_nav_"]) {
+        align-self: stretch;
+    }
+
+    @media (max-width: 980px) {
+        .v15-topbar-card {
+            flex-direction: column;
+            align-items: flex-start;
+        }
+
+        .v15-topbar-right {
+            justify-content: flex-start;
+        }
+    }
+
     </style>
     """, unsafe_allow_html=True)

@@ -79,3 +79,10 @@ Pour une production réelle, ajoutez impérativement :
 ## V14
 - Correction de lisibilité du bouton actif dans la topbar
 - Forçage de la couleur du texte blanc sur le bouton primaire
+
+
+## V15
+- Refonte totale de la topbar
+- Carte d’identité plus premium
+- Navigation plus lisible et cohérente
+- Bouton actif clair et lisible
