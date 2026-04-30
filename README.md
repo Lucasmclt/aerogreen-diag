@@ -93,3 +93,10 @@ Pour une production réelle, ajoutez impérativement :
 - Suppression de la topbar haute
 - Navigation entièrement déplacée dans la sidebar
 - Carte de statut et dossier actif dans la sidebar
+
+
+## V17
+- Refonte Stripe-like de la page de connexion
+- Mise en page en deux colonnes
+- Indicateur visuel de robustesse du mot de passe
+- Couleur dynamique selon la complexité
