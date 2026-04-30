@@ -385,6 +385,98 @@ def load_css():
     .muted { color: var(--muted); }
     .small { font-size: .86rem; }
 
+
+    .hero-animated {
+        position: relative;
+        overflow: hidden;
+    }
+
+    .hero-animated::before,
+    .hero-animated::after {
+        content: "";
+        position: absolute;
+        border-radius: 999px;
+        filter: blur(2px);
+        pointer-events: none;
+        opacity: .55;
+    }
+
+    .hero-animated::before {
+        width: 180px;
+        height: 180px;
+        right: -30px;
+        top: -30px;
+        background: radial-gradient(circle, rgba(99,102,241,.25) 0%, rgba(99,102,241,0) 70%);
+        animation: floatOrb 8s ease-in-out infinite;
+    }
+
+    .hero-animated::after {
+        width: 150px;
+        height: 150px;
+        left: 12%;
+        bottom: -50px;
+        background: radial-gradient(circle, rgba(16,185,129,.22) 0%, rgba(16,185,129,0) 70%);
+        animation: floatOrb 10s ease-in-out infinite reverse;
+    }
+
+    .stats-strip {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 14px;
+        margin: 1rem 0 1.25rem;
+        animation: fadeIn .5s ease-in;
+    }
+
+    .stats-item {
+        background: rgba(255,255,255,.86);
+        border: 1px solid var(--line);
+        border-radius: 18px;
+        padding: 18px 20px;
+        box-shadow: var(--shadow);
+        transition: transform .18s ease, box-shadow .18s ease;
+    }
+
+    .stats-item:hover, .card:hover, .card-soft:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 18px 34px rgba(15,23,42,.09);
+    }
+
+    .stats-value {
+        font-size: 1.4rem;
+        font-weight: 900;
+        color: var(--text);
+        letter-spacing: -.03em;
+    }
+
+    .stats-label {
+        margin-top: 4px;
+        color: var(--muted);
+        font-size: .9rem;
+    }
+
+    .sidebar-mini-status {
+        font-size: .82rem;
+        font-weight: 700;
+        color: var(--muted);
+        margin: .1rem 0 .65rem;
+    }
+
+    .sidebar-locked {
+        color: var(--muted);
+        font-size: .82rem;
+        line-height: 1.45;
+        padding: 10px 2px 12px;
+    }
+
+    .sidebar-workspace {
+        background: linear-gradient(180deg, rgba(255,255,255,.95), rgba(248,250,252,.92));
+        border: 1px solid var(--line);
+        border-radius: 16px;
+        padding: 14px;
+        margin-top: .85rem;
+        box-shadow: 0 8px 24px rgba(15,23,42,.04);
+    }
+
     /* INPUTS */
     .stNumberInput input, .stTextInput input {
         border-radius: 12px !important;
@@ -461,12 +553,22 @@ def load_css():
         .topbar-right {
             justify-content: flex-start;
         }
+
+        .stats-strip {
+            grid-template-columns: 1fr;
+        }
     }
 
     /* ANIMATION */
     @keyframes fadeIn {
         from { opacity: 0; transform: translateY(10px); }
         to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes floatOrb {
+        0% { transform: translateY(0px) translateX(0px); }
+        50% { transform: translateY(12px) translateX(-8px); }
+        100% { transform: translateY(0px) translateX(0px); }
     }
     </style>
     """, unsafe_allow_html=True)

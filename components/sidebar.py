@@ -12,12 +12,12 @@ def render_sidebar():
         st.markdown("""
         <div class='sidebar-brand'>
             <div class='sidebar-brand-title'>✈️ AeroGreen</div>
-            <div class='sidebar-brand-sub'>Pré-audit carbone numérique B2B pour sous-traitants aéronautiques.</div>
+            <div class='sidebar-brand-sub'>Plateforme de pré-audit carbone numérique.</div>
         </div>
         """, unsafe_allow_html=True)
 
         if st.session_state.authenticated:
-            st.caption(f"Connecté : {st.session_state.user_email}")
+            st.markdown(f"<div class='sidebar-mini-status'>Connecté · {st.session_state.user_email}</div>", unsafe_allow_html=True)
             if st.button("Déconnexion"):
                 st.session_state.authenticated = False
                 st.session_state.user_id = None
@@ -25,95 +25,67 @@ def render_sidebar():
                 st.session_state.page = "Accueil"
                 st.rerun()
         else:
-            st.markdown("""
-            <div class='card-soft' style='margin-bottom:.85rem;'>
-                <div class='section-title'>Accès invité</div>
-                <div class='feature-text small'>
-                    Vous pouvez lancer le test rapide sans compte. Le diagnostic avancé nécessite une connexion.
-                </div>
-            </div>
-            """, unsafe_allow_html=True)
-
-            if st.button("Connexion / compte pro"):
+            st.markdown("<div class='sidebar-mini-status'>Mode invité</div>", unsafe_allow_html=True)
+            if st.button("Connexion professionnelle"):
                 st.session_state.page = "Connexion"
                 st.rerun()
 
-        if st.session_state.workspace_created:
-            st.markdown(f"""
-            <div class='card-soft' style='margin-bottom:.85rem;'>
-                <div class='section-title'>Espace actif</div>
-                <div class='feature-title' style='margin-bottom:3px;'>{st.session_state.company_name}</div>
-                <div class='feature-text small'>{st.session_state.company_city} · {st.session_state.company_sector}</div>
-                <div class='feature-text small'>Réf. {st.session_state.client_reference or 'N/A'}</div>
-            </div>
-            """, unsafe_allow_html=True)
-
-        st.markdown("<div class='sidebar-section-label'>Navigation publique</div>", unsafe_allow_html=True)
-        current_public = st.session_state.page if st.session_state.page in PUBLIC_PAGES else PUBLIC_PAGES[0]
+        st.markdown("<div class='sidebar-section-label'>Navigation</div>", unsafe_allow_html=True)
+        public_index = PUBLIC_PAGES.index(st.session_state.page) if st.session_state.page in PUBLIC_PAGES else 0
         selected_public = st.radio(
             "Navigation publique",
             options=PUBLIC_PAGES,
-            index=PUBLIC_PAGES.index(current_public),
+            index=public_index,
             label_visibility="collapsed",
             key="public_nav"
         )
-        if selected_public != st.session_state.page and st.session_state.page in PUBLIC_PAGES:
+        if st.session_state.page in PUBLIC_PAGES and selected_public != st.session_state.page:
             st.session_state.page = selected_public
 
         st.markdown("<div class='sidebar-section-label'>Espace professionnel</div>", unsafe_allow_html=True)
-
         if st.session_state.authenticated:
-            current_private = st.session_state.page if st.session_state.page in PRIVATE_PAGES else PRIVATE_PAGES[0]
+            private_index = PRIVATE_PAGES.index(st.session_state.page) if st.session_state.page in PRIVATE_PAGES else 0
             selected_private = st.radio(
                 "Navigation professionnelle",
                 options=PRIVATE_PAGES,
-                index=PRIVATE_PAGES.index(current_private),
+                index=private_index,
                 label_visibility="collapsed",
                 key="private_nav"
             )
-            if selected_private != st.session_state.page and st.session_state.page in PRIVATE_PAGES:
+            if st.session_state.page in PRIVATE_PAGES and selected_private != st.session_state.page:
                 st.session_state.page = selected_private
         else:
-            st.markdown("""
-            <div class='card-soft'>
-                <div class='section-title'>Verrouillé</div>
-                <div class='feature-text small'>
-                    Connectez-vous avec un email professionnel pour accéder au dashboard, au diagnostic avancé et aux rapports.
-                </div>
+            st.markdown("<div class='sidebar-locked'>Diagnostic avancé, score, dashboard et rapport disponibles après connexion.</div>", unsafe_allow_html=True)
+
+        if st.session_state.workspace_created:
+            st.markdown(f"""
+            <div class='sidebar-workspace'>
+                <div class='section-title'>Dossier actif</div>
+                <div class='feature-title' style='margin-bottom:2px;'>{st.session_state.company_name}</div>
+                <div class='feature-text small'>{st.session_state.company_city}</div>
             </div>
             """, unsafe_allow_html=True)
 
-        st.markdown("<div class='sidebar-section-label'>Statut</div>", unsafe_allow_html=True)
+        if st.session_state.fit_test_done or (st.session_state.diagnostic_done and st.session_state.diagnostic_result):
+            st.markdown("<div class='sidebar-section-label'>Indicateurs</div>", unsafe_allow_html=True)
 
         if st.session_state.fit_test_done:
             result_label, result_color = get_fit_result(st.session_state.fit_score)
             st.markdown(f"""
             <div class='card-soft' style='margin-bottom:.7rem;'>
-                <div class='section-title'>Éligibilité</div>
-                <div style='font-weight:800; font-size:1.35rem; color:{result_color};'>{st.session_state.fit_score:.0f}%</div>
+                <div class='section-title'>Test rapide</div>
+                <div style='font-weight:800; font-size:1.25rem; color:{result_color};'>{st.session_state.fit_score:.0f}%</div>
                 <div class='feature-text small'>{result_label}</div>
             </div>
             """, unsafe_allow_html=True)
-        else:
-            st.caption("Commencez par le test rapide pour obtenir une première qualification.")
 
         if st.session_state.diagnostic_done and st.session_state.diagnostic_result:
             score = st.session_state.diagnostic_result["global_score"]
             grade, color = get_grade(score)
             st.markdown(f"""
             <div class='card-soft'>
-                <div class='section-title'>Score global</div>
-                <div style='font-weight:900; font-size:1.55rem; color:{color};'>{grade} · {score:.0f}/100</div>
+                <div class='section-title'>Diagnostic</div>
+                <div style='font-weight:900; font-size:1.4rem; color:{color};'>{grade} · {score:.0f}/100</div>
                 <div class='feature-text small'>{st.session_state.diagnostic_result['risk_label']}</div>
             </div>
             """, unsafe_allow_html=True)
-
-        st.markdown("""
-        <div class='card-soft sidebar-process' style='margin-top:.8rem;'>
-            <div class='section-title'>Parcours</div>
-            <div class='feature-text small'>1. Test rapide gratuit</div>
-            <div class='feature-text small'>2. Connexion professionnelle</div>
-            <div class='feature-text small'>3. Diagnostic avancé</div>
-            <div class='feature-text small'>4. Score & rapport</div>
-        </div>
-        """, unsafe_allow_html=True)
