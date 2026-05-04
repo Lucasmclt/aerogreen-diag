@@ -102,8 +102,8 @@ def render_process_timeline():
         <div class='timeline-step'>
             <div class='timeline-dot'>2</div>
             <div>
-                <strong>Espace de démonstration</strong>
-                <p>Connexion pour créer un cas d’étude et enregistrer les analyses.</p>
+                <strong>Cas d’étude</strong>
+                <p>Chargement d’un exemple fictif pour comprendre le parcours sans friction.</p>
             </div>
         </div>
         <div class='timeline-line'></div>

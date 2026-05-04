@@ -17,13 +17,13 @@ def render_home():
     <div class='landing-hero'>
         <div class='hero-content'>
             <div class='hero-label'>Prototype portfolio — non officiel</div>
-            <h1>AeroGreen Diag transforme un sujet RSE numérique complexe en pré-diagnostic pédagogique pour PME industrielles.</h1>
+            <h1>AeroGreen Diag aide une PME industrielle à structurer un premier dossier de preuves RSE numériques.</h1>
             <p>
-                Projet personnel avant TBS L3, développé depuis un profil prépa EPITA : l’objectif est de démontrer une capacité
-                à relier tech, produit, business, RSE, UX et contexte aéronautique toulousain — sans prétendre produire un audit officiel.
+                Prototype portfolio construit avant TBS L3 depuis un profil prépa EPITA : traduire un problème industriel et RSE flou
+                en outil numérique compréhensible, avec diagnostic indicatif, preuves, rapport et limites assumées.
             </p>
             <div class="hero-cta-row">
-                <a class="hero-cta primary" href="?page=Test%20rapide" target="_self">Commencer le test rapide</a>
+                <a class="hero-cta primary" href="?page=Cas%20d%E2%80%99%C3%A9tude%20fictif" target="_self">Voir le cas d’étude</a>
                 <a class="hero-cta secondary" href="?page=M%C3%A9thodologie%20%26%20limites" target="_self">Voir la méthodologie</a>
             </div>
         </div>
@@ -63,10 +63,7 @@ def render_home():
     cta1, cta2, cta3 = st.columns(3)
     with cta1:
         if st.button("Lancer le diagnostic", key="home_start_diagnostic", use_container_width=True):
-            if st.session_state.get("authenticated"):
-                _go_to("Diagnostic avancé")
-            else:
-                _go_to("Connexion")
+            _go_to("Diagnostic avancé")
     with cta2:
         if st.button("Voir un cas fictif", key="home_case_study", use_container_width=True):
             _go_to("Cas d’étude fictif")
@@ -78,7 +75,7 @@ def render_home():
     <div class='trust-strip'>
         <div><strong>Portfolio</strong><span>Démonstrateur produit / tech / business</span></div>
         <div><strong>Pré-diagnostic</strong><span>Score indicatif, non officiel</span></div>
-        <div><strong>Rapport</strong><span>Document de travail exportable</span></div>
+        <div><strong>Rapport</strong><span>Pièce maîtresse exportable</span></div>
     </div>
     """, unsafe_allow_html=True)
 
@@ -91,7 +88,7 @@ def render_home():
             Dans une chaîne de sous-traitance aéronautique, une PME peut être sollicitée sur ses pratiques environnementales,
             ses preuves documentaires, ses achats responsables, sa gestion des équipements numériques ou ses données PLM/CAO.
             Le prototype explore comment organiser ces informations avant un échange client, un questionnaire fournisseur,
-            une préparation EcoVadis ou une réflexion autour du numérique responsable.
+            une préparation interne inspirée de logiques de maturité ou une réflexion autour du numérique responsable.
         </div>
     </div>
     """, unsafe_allow_html=True)

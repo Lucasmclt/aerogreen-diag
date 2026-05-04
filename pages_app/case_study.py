@@ -3,26 +3,33 @@ import pandas as pd
 
 from components.cards import render_page_header, render_kpi_card, render_recommendation_card
 from components.charts import render_score_bars, render_emissions_bar_chart
-from services.calculations import compute_advanced_score, build_recommendations
+from services.calculations import (
+    build_missing_evidence,
+    build_recommendations,
+    build_short_term_actions,
+    build_strengths,
+    build_weaknesses,
+    compute_advanced_score,
+)
 
 
 CASE_STUDY_COMPANY = {
-    "company_name": "Occitaero Components",
+    "company_name": "AeroPart Occitanie",
     "contact_name": "Responsable méthodes / SI",
-    "company_city": "Toulouse",
-    "company_sector": "Sous-traitant aéronautique rang 2",
+    "company_city": "Blagnac",
+    "company_sector": "PME industrielle fictive · sous-traitant aéronautique rang 2",
     "client_reference": "CAS-FICTIF-AERO-01",
 }
 
 
 CASE_STUDY_INPUTS = {
-    "employees": 85,
+    "employees": 80,
     "sites": 2,
     "annual_revenue": 11_500_000,
     "critical_customer": True,
-    "nb_laptops": 54,
-    "nb_workstations": 31,
-    "nb_screens": 92,
+    "nb_laptops": 52,
+    "nb_workstations": 30,
+    "nb_screens": 88,
     "nb_servers": 3,
     "nb_cloud_vm": 8,
     "lifecycle_years": 4,
@@ -41,6 +48,7 @@ CASE_STUDY_INPUTS = {
     "refurbished_policy": False,
     "repair_policy": True,
     "purchase_centralized": True,
+    "reduction_target": "Intention",
     "short_trips": 9,
     "long_trips": 2,
 }
@@ -57,25 +65,32 @@ def _load_case_study_in_session(result: dict):
     st.session_state.diagnostic_result = result
     st.session_state.diagnostic_done = True
     st.session_state.report_ready = True
+    st.session_state.current_audit_public_code = ""
+    st.session_state.last_saved_diagnostic_key = ""
+    st.session_state.last_saved_diagnostic_id = None
 
 
 def render_case_study():
     result = compute_advanced_score(CASE_STUDY_INPUTS)
     recos = build_recommendations(CASE_STUDY_INPUTS, result)
+    missing = build_missing_evidence(CASE_STUDY_INPUTS, result, limit=6)
+    actions = build_short_term_actions(CASE_STUDY_INPUTS, result)
+    strengths = build_strengths(CASE_STUDY_INPUTS, result)
+    weaknesses = build_weaknesses(CASE_STUDY_INPUTS, result)
 
     render_page_header(
         "Cas d’étude fictif",
-        "Exemple pédagogique pour comprendre ce qu’il faut lancer depuis le dashboard et comment lire un pré-diagnostic.",
+        "AeroPart Occitanie illustre le parcours attendu : contexte, diagnostic, preuves, recommandations et limites.",
         "Simulation non officielle"
     )
 
     st.markdown("""
     <div class='card-soft' style='border:1px solid rgba(99,102,241,.22);'>
         <div class='section-title'>Prototype portfolio — non officiel</div>
-        <strong>Occitaero Components est une PME fictive.</strong>
+        <strong>Ce cas est volontairement fictif.</strong>
         <div class='feature-text'>
-            Ce cas sert uniquement à montrer le parcours, le type de données collectées, la restitution du score et les recommandations.
-            Il ne constitue ni une preuve RSE, ni un audit carbone, ni une évaluation EcoVadis.
+            Il sert à montrer comment une PME industrielle pourrait structurer un premier dossier de preuves RSE numériques
+            avant une demande client ou fournisseur. Il ne constitue ni audit, ni certification, ni notation officielle.
         </div>
     </div>
     """, unsafe_allow_html=True)
@@ -84,9 +99,10 @@ def render_case_study():
     st.markdown("""
     <div class='card'>
         <p class='feature-text'>
-            Occitaero Components est imaginée comme un sous-traitant aéronautique toulousain de rang 2, avec un usage important
-            de postes CAO, de données PLM, d’archives techniques et quelques contraintes client sur la structuration des preuves RSE.
-            L’entreprise a commencé à formaliser certains éléments, mais son suivi numérique responsable reste partiel.
+            AeroPart Occitanie est une PME fictive de 80 salariés située autour de Toulouse. Elle fabrique des composants
+            pour un donneur d’ordre aéronautique, utilise des stations CAO, un environnement PLM/PDM, des archives techniques
+            et un parc informatique mixte. L’entreprise reçoit une demande client sur ses pratiques RSE / numérique responsable.
+            Elle dispose de preuves partielles, mais elles sont dispersées entre DSI, méthodes, qualité et achats.
         </p>
     </div>
     """, unsafe_allow_html=True)
@@ -107,16 +123,26 @@ def render_case_study():
         st.markdown("""
         <div class='card-soft'>
             <div class='section-title'>Interprétation</div>
-            <strong>Le score sert à repérer les zones faibles, pas à classer officiellement l’entreprise.</strong>
+            <strong>Le signal intéressant n’est pas le score : c’est la traduction en preuves et actions.</strong>
             <div class='feature-text'>
-                Dans cet exemple, les axes les plus sensibles sont la gouvernance RSE numérique, la formalisation fournisseur
-                et la gestion des données PLM/CAO. La valeur du prototype est de transformer ces constats en plan de discussion.
+                Ici, l’entreprise a déjà un inventaire IT et une gestion DEEE, mais elle reste fragile sur les critères
+                fournisseurs, la formalisation des achats IT et la conservation des données CAO/PLM.
             </div>
         </div>
         """, unsafe_allow_html=True)
+        st.markdown("**Forces identifiées**")
+        for item in strengths:
+            st.markdown(f"- {item}")
+        st.markdown("**Faiblesses principales**")
+        for item in weaknesses:
+            st.markdown(f"- {item}")
     with right:
-        score_rows = pd.DataFrame(result["score_rows"])
-        render_score_bars(score_rows)
+        render_score_bars(result["score_rows"])
+
+    st.markdown("## Preuves à consolider")
+    missing_df = pd.DataFrame(missing)[["criterion", "expected", "example", "limit"]]
+    missing_df.columns = ["Critère", "Preuve attendue", "Exemple concret", "Limite"]
+    st.dataframe(missing_df, use_container_width=True, hide_index=True)
 
     st.markdown("## Répartition carbone indicative")
     render_emissions_bar_chart(result["df"])
@@ -128,34 +154,29 @@ def render_case_study():
         with cols[index % len(cols)]:
             render_recommendation_card(reco["priority"], reco["title"], reco["text"])
 
+    st.markdown("## Actions court terme")
+    for action in actions:
+        st.markdown(f"- {action}")
+
     st.markdown("""
     <div class='card-soft'>
         <div class='section-title'>À retenir</div>
-        <strong>Ce cas d’étude montre le livrable attendu après un diagnostic.</strong>
+        <strong>Ce cas d’étude sert à éviter le dashboard vide.</strong>
         <div class='feature-text'>
-            Depuis le dashboard, l’utilisateur doit soit lancer son premier diagnostic réel, soit consulter ce cas fictif
-            pour comprendre la logique de l’application avant de saisir ses propres données.
+            Il peut être chargé dans la session pour générer un score, afficher les preuves manquantes et produire un rapport PDF.
         </div>
     </div>
     """, unsafe_allow_html=True)
 
     cta1, cta2 = st.columns(2)
     with cta1:
-        if st.button("Lancer mon premier diagnostic", key="case_start_real_diag", use_container_width=True):
-            if st.session_state.get("authenticated"):
-                st.session_state.page = "Diagnostic avancé"
-                st.query_params["page"] = "Diagnostic avancé"
-            else:
-                st.session_state.page = "Connexion"
-                st.query_params["page"] = "Connexion"
+        if st.button("Lancer mon propre diagnostic", key="case_start_real_diag", use_container_width=True):
+            st.session_state.page = "Diagnostic avancé"
+            st.query_params["page"] = "Diagnostic avancé"
             st.rerun()
     with cta2:
-        if st.button("Charger ce cas dans le score", key="case_load_score", use_container_width=True):
-            if not st.session_state.get("authenticated"):
-                st.session_state.page = "Connexion"
-                st.query_params["page"] = "Connexion"
-                st.rerun()
+        if st.button("Charger ce cas dans la session", key="case_load_score", use_container_width=True):
             _load_case_study_in_session(result)
-            st.session_state.page = "Score"
-            st.query_params["page"] = "Score"
+            st.session_state.page = "Dashboard"
+            st.query_params["page"] = "Dashboard"
             st.rerun()

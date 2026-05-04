@@ -1,8 +1,8 @@
-import math
 import pandas as pd
 
 
 EMISSION_FACTORS = {
+    # Facteurs simplifiés utilisés comme proxys pédagogiques, pas comme base réglementaire.
     "laptop": 193,
     "workstation": 350,
     "screen": 200,
@@ -20,6 +20,64 @@ WEIGHTS = {
     "data": 20,
     "procurement": 20,
 }
+
+PILLAR_EXPLANATIONS = {
+    "Carbone numérique": "Ordre de grandeur simplifié lié au parc matériel, aux serveurs, au cloud, au stockage et aux déplacements IT/AMOA.",
+    "Gouvernance": "Capacité à nommer un responsable, suivre le parc, documenter les règles et préparer des preuves exploitables.",
+    "Données PLM / CAO": "Maîtrise des données techniques : stockage actif, archives, rétention, nettoyage et règles de conservation.",
+    "Achats IT responsables": "Cycle de vie du matériel, réparation, reconditionné, centralisation des achats et critères fournisseurs.",
+}
+
+EVIDENCE_MATRIX = [
+    {
+        "criterion": "Inventaire du parc numérique",
+        "expected": "Liste datée des postes, écrans, serveurs, VM/cloud et responsables internes.",
+        "example": "Export GLPI, Excel de parc IT, inventaire DSI, bon de renouvellement matériel.",
+        "limit": "Ne prouve pas l’empreinte carbone réelle ; sert à cadrer le périmètre.",
+    },
+    {
+        "criterion": "Gestion DEEE / fin de vie",
+        "expected": "Procédure ou preuve de collecte, recyclage, effacement ou reprise des équipements.",
+        "example": "Contrat prestataire DEEE, bordereau de collecte, certificat d’effacement.",
+        "limit": "La preuve doit être datée et rattachée au parc concerné.",
+    },
+    {
+        "criterion": "Achats IT responsables",
+        "expected": "Critère d’achat formalisé : durée de vie, réparation, reconditionné, fournisseur, énergie.",
+        "example": "Politique achats IT, grille de sélection fournisseur, facture de matériel reconditionné.",
+        "limit": "Une intention ne suffit pas ; il faut une trace utilisable dans un dossier fournisseur.",
+    },
+    {
+        "criterion": "Données CAO / PLM",
+        "expected": "Cartographie des outils, volumes, règles d’archivage et séparation actif/archive.",
+        "example": "Liste CATIA/PLM/PDM, volume de stockage par projet, règle de conservation.",
+        "limit": "Le volume seul ne dit rien sur la criticité ni sur l’obligation de conservation.",
+    },
+    {
+        "criterion": "Règle de conservation des données techniques",
+        "expected": "Règle claire sur les projets actifs, projets terminés, archives et données dormantes.",
+        "example": "Procédure qualité, règle PLM, note DSI, convention projet.",
+        "limit": "Doit être compatible avec les contraintes qualité, client et propriété intellectuelle.",
+    },
+    {
+        "criterion": "Gouvernance numérique responsable",
+        "expected": "Référent identifié, fréquence de suivi, responsabilités et preuves centralisées.",
+        "example": "Fiche mission, compte-rendu trimestriel, tableau de suivi des actions.",
+        "limit": "Nommer un référent ne prouve pas la maturité ; il faut des actions suivies.",
+    },
+    {
+        "criterion": "Sensibilisation interne",
+        "expected": "Trace de sensibilisation ou de consignes sur sobriété numérique et usage des données.",
+        "example": "Support de formation, feuille d’émargement, note interne, guide utilisateur.",
+        "limit": "La sensibilisation doit être contextualisée aux usages industriels réels.",
+    },
+    {
+        "criterion": "Preuves fournisseurs numériques",
+        "expected": "Contrats, engagements, critères ou attestations liés aux fournisseurs IT/cloud/prestataires.",
+        "example": "Questionnaire fournisseur, clause achat, attestation hébergeur, contrat de maintenance.",
+        "limit": "Ne remplace pas une vérification documentaire ou contractuelle complète.",
+    },
+]
 
 
 def clamp(value, min_value=0, max_value=100):
@@ -48,10 +106,10 @@ def get_grade(score: float) -> tuple[str, str]:
 
 def get_risk_label(score: float) -> tuple[str, str]:
     if score >= 75:
-        return "Risque faible", "#10b981"
+        return "Maturité indicative élevée", "#10b981"
     if score >= 55:
-        return "Risque modéré", "#f59e0b"
-    return "Risque élevé", "#ef4444"
+        return "Maturité indicative intermédiaire", "#f59e0b"
+    return "Maturité indicative fragile", "#ef4444"
 
 
 def get_maturity_label(score: float) -> str:
@@ -64,10 +122,10 @@ def get_maturity_label(score: float) -> str:
 
 def get_fit_result(score: float) -> tuple[str, str]:
     if score >= 70:
-        return "Solution fortement pertinente", "#10b981"
+        return "Cas fortement pertinent pour ce pré-diagnostic", "#10b981"
     if score >= 40:
-        return "Solution potentiellement pertinente", "#f59e0b"
-    return "Solution non prioritaire à ce stade", "#ef4444"
+        return "Cas potentiellement pertinent", "#f59e0b"
+    return "Cas peu prioritaire à ce stade", "#ef4444"
 
 
 def compute_fit_score(
@@ -176,7 +234,6 @@ def score_carbon_intensity(total_tonnes: float, employees: int) -> float:
 
     tonnes_per_employee = total_tonnes / employees
 
-    # heuristic pre-audit: lower is better
     if tonnes_per_employee <= 0.7:
         return 90
     if tonnes_per_employee <= 1.5:
@@ -247,7 +304,6 @@ def score_data_management(inputs: dict) -> float:
 
 def score_procurement(inputs: dict) -> float:
     score = 40
-
     lifecycle = inputs.get("lifecycle_years", 3)
 
     if lifecycle >= 6:
@@ -257,17 +313,14 @@ def score_procurement(inputs: dict) -> float:
     elif lifecycle >= 4:
         score += 10
     else:
-        score -= 5
+        score -= 10
 
     if inputs.get("refurbished_policy", False):
         score += 15
-
     if inputs.get("repair_policy", False):
         score += 15
-
     if inputs.get("supplier_policy", False):
         score += 15
-
     if inputs.get("purchase_centralized", False):
         score += 8
 
@@ -294,7 +347,7 @@ def compute_advanced_score(inputs: dict) -> dict:
     risk_label, risk_color = get_risk_label(global_score)
 
     score_rows = pd.DataFrame({
-        "Pilier": ["Carbone", "Gouvernance", "Données", "Achats IT"],
+        "Pilier": ["Carbone numérique", "Gouvernance", "Données PLM / CAO", "Achats IT responsables"],
         "Score": [carbon, governance, data, procurement],
         "Poids": [WEIGHTS["carbon"], WEIGHTS["governance"], WEIGHTS["data"], WEIGHTS["procurement"]],
     })
@@ -314,42 +367,139 @@ def compute_advanced_score(inputs: dict) -> dict:
     }
 
 
+def build_strengths(inputs: dict, result: dict) -> list[str]:
+    strengths = []
+    if result.get("carbon_score", 0) >= 70:
+        strengths.append("L’intensité carbone numérique déclarée reste contenue par rapport à l’effectif simulé.")
+    if inputs.get("it_inventory"):
+        strengths.append("Un inventaire IT existe déjà : c’est une base utile pour cadrer les preuves.")
+    if inputs.get("deee_management"):
+        strengths.append("La gestion DEEE est déjà identifiée, ce qui donne une première trace de fin de vie matériel.")
+    if inputs.get("rse_owner"):
+        strengths.append("Un référent RSE / IT est identifié, donc le sujet peut être porté par une personne claire.")
+    if inputs.get("repair_policy"):
+        strengths.append("La réparation avant remplacement est déjà prise en compte dans les pratiques IT.")
+    if inputs.get("archive_policy") == "Formalisée" or inputs.get("retention_policy") == "Oui":
+        strengths.append("Une partie des règles de conservation ou d’archivage des données techniques est formalisée.")
+    if not strengths:
+        strengths.append("Le diagnostic donne un premier cadrage exploitable, mais les preuves structurées restent faibles.")
+    return strengths[:5]
+
+
+def build_weaknesses(inputs: dict, result: dict) -> list[str]:
+    weaknesses = []
+    if result.get("governance_score", 100) < 65:
+        weaknesses.append("La gouvernance est trop dépendante de pratiques informelles : responsable, suivi, inventaire ou critères fournisseurs incomplets.")
+    if result.get("data_score", 100) < 65:
+        weaknesses.append("Les données CAO/PLM ne sont pas assez cadrées : rétention, archivage, nettoyage et stockage actif/archive manquent de règles explicites.")
+    if result.get("procurement_score", 100) < 65:
+        weaknesses.append("Les achats IT responsables sont insuffisamment formalisés : reconditionné, réparation, critères fournisseurs ou centralisation restent partiels.")
+    if not inputs.get("it_inventory"):
+        weaknesses.append("Sans inventaire IT fiable, le rapport reste difficile à défendre devant un client ou un fournisseur.")
+    if not inputs.get("supplier_policy"):
+        weaknesses.append("L’absence de critères RSE fournisseurs IT fragilise la réponse à un questionnaire client.")
+    if not weaknesses:
+        weaknesses.append("Les principaux risques sont moins dans le score que dans la qualité, la date et la vérifiabilité des preuves.")
+    return weaknesses[:5]
+
+
+def build_missing_evidence(inputs: dict, result: dict | None = None, limit: int = 8) -> list[dict]:
+    missing = []
+
+    def add(criterion: str):
+        match = next((item for item in EVIDENCE_MATRIX if item["criterion"] == criterion), None)
+        if match and match not in missing:
+            missing.append(match)
+
+    if not inputs.get("it_inventory"):
+        add("Inventaire du parc numérique")
+    if not inputs.get("deee_management"):
+        add("Gestion DEEE / fin de vie")
+    if not inputs.get("responsible_sourcing") or not inputs.get("supplier_policy"):
+        add("Achats IT responsables")
+        add("Preuves fournisseurs numériques")
+    if inputs.get("archive_policy") in ["Aucune", "Informelle"]:
+        add("Données CAO / PLM")
+    if inputs.get("retention_policy") in ["Non", "Partielle"] or inputs.get("plm_cleanup") in ["Jamais", "Rarement"]:
+        add("Règle de conservation des données techniques")
+    if not inputs.get("rse_owner") or inputs.get("rse_frequency") in ["Aucun suivi", None, ""]:
+        add("Gouvernance numérique responsable")
+    if inputs.get("reduction_target") in ["Aucun", "Intention", None, ""]:
+        add("Sensibilisation interne")
+
+    if not missing:
+        missing.append({
+            "criterion": "Preuves datées et vérifiables",
+            "expected": "Rassembler les documents déjà disponibles avec date, propriétaire et périmètre.",
+            "example": "Tableau de preuves : document, propriétaire, date, lien, limite, statut.",
+            "limit": "Même avec un bon score, un client attendra des preuves concrètes et vérifiables.",
+        })
+
+    return missing[:limit]
+
+
+def build_short_term_actions(inputs: dict, result: dict) -> list[str]:
+    actions = []
+    if not inputs.get("it_inventory"):
+        actions.append("Créer un inventaire simple du parc numérique : postes, écrans, serveurs, VM/cloud, propriétaire et date d’achat.")
+    if inputs.get("archive_policy") in ["Aucune", "Informelle"]:
+        actions.append("Distinguer les données CAO/PLM actives des archives et écrire une règle de bascule vers stockage froid.")
+    if inputs.get("retention_policy") in ["Non", "Partielle"]:
+        actions.append("Documenter une règle de conservation des données techniques avec le responsable qualité/BE/DSI.")
+    if not inputs.get("supplier_policy"):
+        actions.append("Ajouter un critère d’achat IT responsable dans la grille fournisseur : durée de vie, réparation, reconditionné ou preuve environnementale.")
+    if not inputs.get("deee_management"):
+        actions.append("Rassembler les preuves de reprise, recyclage ou effacement des équipements en fin de vie.")
+    if not inputs.get("rse_owner"):
+        actions.append("Nommer un référent interne chargé de centraliser les preuves RSE numériques pour les demandes client/fournisseur.")
+    if not actions:
+        actions.append("Passer d’un pré-diagnostic ponctuel à un tableau trimestriel de suivi : preuves, propriétaire, date de mise à jour et statut.")
+    return actions[:6]
+
+
 def build_recommendations(inputs: dict, result: dict) -> list[dict]:
     recos = []
 
     if result["carbon_score"] < 60:
         recos.append({
             "priority": "Haute",
-            "title": "Réduire l’intensité carbone numérique",
-            "text": "Prioriser les postes dominants du bilan : matériel, serveurs, stockage actif ou déplacements liés aux projets IT."
+            "title": "Cibler les postes numériques dominants",
+            "text": "Identifier les 3 premiers postes du tableau d’émissions, puis relier chacun à une action vérifiable : durée de vie matériel, serveurs, stockage actif ou déplacements IT/AMOA."
         })
 
     if result["governance_score"] < 65:
         recos.append({
             "priority": "Haute",
-            "title": "Structurer la gouvernance RSE numérique",
-            "text": "Nommer un référent, créer un inventaire IT fiable et formaliser une politique DEEE / achats responsables."
+            "title": "Centraliser les preuves RSE numériques",
+            "text": "Créer une liste de preuves avec propriétaire, date, lien et limite : inventaire IT, DEEE, achats IT, règles de stockage, fournisseurs et sensibilisation interne."
         })
 
     if result["data_score"] < 65:
         recos.append({
             "priority": "Moyenne",
-            "title": "Mettre sous contrôle les données PLM / CAO",
-            "text": "Définir une politique de rétention, nettoyer les projets dormants et basculer les archives vers du stockage froid."
+            "title": "Mettre sous contrôle les données CAO / PLM",
+            "text": "Identifier les projets dormants depuis plus de 24 mois, distinguer stockage actif et archive, puis formaliser une règle de conservation validée avec qualité/BE/DSI."
         })
 
     if result["procurement_score"] < 65:
         recos.append({
             "priority": "Moyenne",
-            "title": "Allonger le cycle de vie matériel",
-            "text": "Étendre la durée d’usage des équipements, favoriser réparation, reconditionné et achats centralisés."
+            "title": "Formaliser un critère d’achat IT responsable",
+            "text": "Ajouter dans la grille d’achat : durée d’usage cible, réparation avant remplacement, option reconditionnée, preuve fournisseur et procédure de fin de vie."
+        })
+
+    if not inputs.get("it_inventory"):
+        recos.append({
+            "priority": "Haute",
+            "title": "Créer l’inventaire numérique minimal",
+            "text": "Lister postes, écrans, serveurs, cloud/VM, date d’achat, propriétaire et statut. Sans cette base, le rapport reste difficile à défendre."
         })
 
     if not recos:
         recos.append({
             "priority": "Optimisation",
             "title": "Passer du pré-diagnostic au pilotage continu",
-            "text": "L’entreprise dispose d’une bonne base. Prochaine étape : indicateurs trimestriels, preuves RSE et trajectoire annuelle."
+            "text": "Conserver les preuves datées, vérifier leur périmètre et suivre les indicateurs tous les trimestres avant toute demande client ou fournisseur."
         })
 
-    return recos
+    return recos[:5]

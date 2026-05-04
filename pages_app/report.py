@@ -10,17 +10,24 @@ from services.database import list_audits, get_audit_by_public_code
 def render_report():
     render_page_header(
         "Rapport de travail",
-        "Export PDF indicatif : synthèse, score, émissions estimées et recommandations prioritaires.",
-        "Document de travail"
+        "Export PDF indicatif : contexte, score, preuves manquantes, recommandations et limites.",
+        "Pièce maîtresse"
     )
 
     saved_audits = list_audits(st.session_state.user_id) if st.session_state.authenticated else []
 
     if not saved_audits:
         st.warning("Aucun pré-diagnostic enregistré n’est disponible pour générer un rapport de travail.")
-        if st.button("Aller au pré-diagnostic guidé"):
-            st.session_state.page = "Diagnostic avancé"
-            st.query_params["page"] = "Diagnostic avancé"
+        if st.session_state.get("diagnostic_done") and st.session_state.get("diagnostic_result"):
+            st.info("Un diagnostic est actif dans la session. Passez par la page Score pour l’enregistrer, puis revenez télécharger le PDF.")
+            target_label = "Enregistrer depuis la page Score"
+            target_page = "Score"
+        else:
+            target_label = "Lancer le diagnostic guidé"
+            target_page = "Diagnostic avancé"
+        if st.button(target_label, use_container_width=True):
+            st.session_state.page = target_page
+            st.query_params["page"] = target_page
             st.rerun()
         return
 
@@ -73,12 +80,13 @@ def render_report():
         </div>
         <br>
         <div class='feature-text'>
-            Le rapport PDF contient la synthèse indicative, les scores par pilier,
-            le détail des émissions estimées, les recommandations prioritaires et une réserve méthodologique visible.
+            Le rapport PDF contient le contexte, l’objectif du pré-diagnostic, le score indicatif,
+            la lecture par pilier, les forces, les faiblesses, les preuves manquantes,
+            les recommandations, les actions court terme et les limites méthodologiques.
         </div>
         <br>
         <div class='feature-text'>
-            <strong>Document de travail - À consolider avec preuves et référentiels officiels.</strong>
+            <strong>Document de travail indicatif — aucune certification, aucune conformité garantie.</strong>
         </div>
     </div>
     """, unsafe_allow_html=True)
@@ -89,6 +97,7 @@ def render_report():
         recommendations=recos,
         fit_score=fit_score,
         fit_result=fit_result,
+        inputs=inputs,
     )
 
     st.markdown("<div class='report-download-spacer'></div>", unsafe_allow_html=True)

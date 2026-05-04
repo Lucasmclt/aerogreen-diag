@@ -1,36 +1,44 @@
 import streamlit as st
 
 from styles.css import load_css
-from services.database import init_db
+from services.database import init_db, get_or_create_passwordless_user
 from components.sidebar import render_sidebar
 from pages_app.home import render_home
-from pages_app.login import render_login
 from pages_app.fit_test import render_fit_test
 from pages_app.dashboard import render_dashboard
 from pages_app.diagnostic_wizard import render_diagnostic_wizard
 from pages_app.score import render_score
 from pages_app.report import render_report
-from pages_app.deep_audit import render_deep_audit
 from pages_app.methodology import render_methodology
 from pages_app.case_study import render_case_study
 
 
 st.set_page_config(
-    page_title="AeroGreen",
+    page_title="AeroGreen Diag",
     page_icon="✈️",
     layout="wide",
     initial_sidebar_state="expanded"
 )
 
+VALID_PAGES = [
+    "Accueil",
+    "Test rapide",
+    "Dashboard",
+    "Diagnostic avancé",
+    "Score",
+    "Rapport",
+    "Méthodologie & limites",
+    "Cas d’étude fictif",
+]
 
-PUBLIC_PAGES = ["Accueil", "Test rapide", "Connexion", "Méthodologie & limites", "Cas d’étude fictif"]
+DEMO_EMAIL = "demo@aerogreen.local"
 
 
 def init_session_state():
     defaults = {
         "page": "Accueil",
 
-        # Workspace de démonstration
+        # Workspace de démonstration local
         "workspace_created": False,
         "company_name": "",
         "contact_name": "",
@@ -55,12 +63,12 @@ def init_session_state():
         "last_saved_diagnostic_key": "",
         "last_saved_diagnostic_id": None,
         "current_audit_public_code": "",
-        "current_deep_public_code": "",
 
-        # Auth
-        "authenticated": False,
+        # Démo locale : pas de friction d’authentification pour un projet portfolio.
+        "authenticated": True,
         "user_id": None,
-        "user_email": "",
+        "user_email": DEMO_EMAIL,
+        "demo_mode": True,
     }
 
     for key, value in defaults.items():
@@ -68,36 +76,25 @@ def init_session_state():
             st.session_state[key] = value
 
 
+def ensure_demo_user():
+    if st.session_state.get("user_id") is None:
+        user = get_or_create_passwordless_user(DEMO_EMAIL)
+        st.session_state.user_id = user["id"]
+        st.session_state.user_email = user["email"]
+        st.session_state.authenticated = True
+        st.session_state.demo_mode = True
+
+
 def sync_query_params():
     page = st.query_params.get("page")
-    valid_pages = [
-        "Accueil",
-        "Test rapide",
-        "Connexion",
-        "Dashboard",
-        "Diagnostic avancé",
-        "Score",
-        "Rapport",
-        "Audit approfondi",
-        "Méthodologie & limites",
-        "Cas d’étude fictif",
-        "Dossier RSE",
-    ]
-    if page in valid_pages:
+    if page in VALID_PAGES:
         st.session_state.page = page
-
-
-def require_auth():
-    if not st.session_state.authenticated:
-        st.session_state.page = "Connexion"
-        st.query_params["page"] = "Connexion"
-        return False
-    return True
 
 
 def main():
     init_db()
     init_session_state()
+    ensure_demo_user()
     sync_query_params()
     load_css()
     render_sidebar()
@@ -108,33 +105,14 @@ def main():
         render_home()
     elif page == "Test rapide":
         render_fit_test()
-    elif page == "Connexion":
-        render_login()
     elif page == "Dashboard":
-        if require_auth():
-            render_dashboard()
-        else:
-            render_login()
+        render_dashboard()
     elif page == "Diagnostic avancé":
-        if require_auth():
-            render_diagnostic_wizard()
-        else:
-            render_login()
+        render_diagnostic_wizard()
     elif page == "Score":
-        if require_auth():
-            render_score()
-        else:
-            render_login()
+        render_score()
     elif page == "Rapport":
-        if require_auth():
-            render_report()
-        else:
-            render_login()
-    elif page in ["Audit approfondi", "Dossier RSE"]:
-        if require_auth():
-            render_deep_audit()
-        else:
-            render_login()
+        render_report()
     elif page == "Méthodologie & limites":
         render_methodology()
     elif page == "Cas d’étude fictif":

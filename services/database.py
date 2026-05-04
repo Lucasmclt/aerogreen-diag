@@ -1,9 +1,8 @@
-import os
-import sqlite3
+import json
 import secrets
 import hashlib
 import hmac
-import json
+import sqlite3
 from datetime import datetime
 from pathlib import Path
 
@@ -87,50 +86,7 @@ def init_db():
         CREATE INDEX IF NOT EXISTS idx_audits_user_created
         ON audits(user_id, created_at DESC);
         """)
-        columns = [row["name"] for row in conn.execute("PRAGMA table_info(audits);").fetchall()]
-        if "public_code" not in columns:
-            conn.execute("ALTER TABLE audits ADD COLUMN public_code TEXT;")
-        _backfill_public_codes(conn, "audits", "DIAG")
-        conn.execute("""
-        CREATE UNIQUE INDEX IF NOT EXISTS idx_audits_public_code
-        ON audits(public_code);
-        """)
-
-        conn.execute("""
-        CREATE TABLE IF NOT EXISTS deep_audits (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            public_code TEXT UNIQUE,
-            user_id INTEGER NOT NULL,
-            company_name TEXT NOT NULL,
-            company_city TEXT,
-            company_sector TEXT,
-            client_reference TEXT,
-            target_level TEXT,
-            global_score REAL,
-            documents_score REAL,
-            environment_score REAL,
-            reen_score REAL,
-            plm_score REAL,
-            data_json TEXT NOT NULL,
-            scores_json TEXT NOT NULL,
-            created_at TEXT NOT NULL,
-            FOREIGN KEY(user_id) REFERENCES users(id) ON DELETE CASCADE
-        );
-        """)
-
-        conn.execute("""
-        CREATE INDEX IF NOT EXISTS idx_deep_audits_user_created
-        ON deep_audits(user_id, created_at DESC);
-        """)
-
-        columns = [row["name"] for row in conn.execute("PRAGMA table_info(deep_audits);").fetchall()]
-        if "public_code" not in columns:
-            conn.execute("ALTER TABLE deep_audits ADD COLUMN public_code TEXT;")
-        _backfill_public_codes(conn, "deep_audits", "RSE")
-        conn.execute("""
-        CREATE UNIQUE INDEX IF NOT EXISTS idx_deep_audits_public_code
-        ON deep_audits(public_code);
-        """)
+        _ensure_audits_public_code_column(conn)
 
 
 def _hash_password(password: str, salt_hex: str | None = None) -> tuple[str, str]:
@@ -192,15 +148,11 @@ def authenticate_user(email: str, password: str) -> dict | None:
     if not hmac.compare_digest(candidate_hash, row["password_hash"]):
         return None
 
-    return {
-        "id": row["id"],
-        "email": row["email"],
-    }
-
+    return {"id": row["id"], "email": row["email"]}
 
 
 def get_or_create_passwordless_user(email: str) -> dict:
-    """Create or return a user for local passwordless demo access."""
+    """Create or return a local demo user used by the portfolio prototype."""
     email = email.strip().lower()
 
     with get_connection() as conn:
@@ -314,8 +266,6 @@ def get_audit(user_id: int, audit_id: int) -> dict | None:
     return data
 
 
-
-
 def get_audit_by_public_code(user_id: int, public_code: str) -> dict | None:
     code = (public_code or "").strip()
     if not code:
@@ -366,105 +316,6 @@ def delete_audit(user_id: int, audit_id: int) -> bool:
     with get_connection() as conn:
         cursor = conn.execute(
             "DELETE FROM audits WHERE id = ? AND user_id = ?",
-            (audit_id, user_id)
-        )
-        return cursor.rowcount > 0
-
-
-
-
-
-def _ensure_deep_audits_public_code_column(conn):
-    columns = [row["name"] for row in conn.execute("PRAGMA table_info(deep_audits);").fetchall()]
-    if "public_code" not in columns:
-        conn.execute("ALTER TABLE deep_audits ADD COLUMN public_code TEXT;")
-    _backfill_public_codes(conn, "deep_audits", "RSE")
-    conn.execute("""
-    CREATE UNIQUE INDEX IF NOT EXISTS idx_deep_audits_public_code
-    ON deep_audits(public_code);
-    """)
-
-def _generate_unique_deep_code(conn) -> str:
-    _ensure_deep_audits_public_code_column(conn)
-    return _new_public_code(conn, "deep_audits", "RSE")
-
-def save_deep_audit(user_id: int, company: dict, data: dict, scores: dict) -> str:
-    data_safe = _make_json_safe(data)
-    scores_safe = _make_json_safe(scores)
-
-    with get_connection() as conn:
-        public_code = _generate_unique_deep_code(conn)
-        cursor = conn.execute(
-            """
-            INSERT INTO deep_audits (
-                public_code, user_id, company_name, company_city, company_sector, client_reference,
-                target_level, global_score, documents_score, environment_score, reen_score, plm_score,
-                data_json, scores_json, created_at
-            )
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-            """,
-            (
-                public_code,
-                user_id,
-                company.get("company_name", "Entreprise non renseignée"),
-                company.get("company_city", ""),
-                company.get("company_sector", ""),
-                company.get("client_reference", ""),
-                data.get("meta", {}).get("target_level", ""),
-                float(scores.get("Global", 0)),
-                float(scores.get("Documents", 0)),
-                float(scores.get("Environnement", 0)),
-                float(scores.get("REEN", 0)),
-                float(scores.get("CAO/PLM", 0)),
-                json.dumps(data_safe, ensure_ascii=False),
-                json.dumps(scores_safe, ensure_ascii=False),
-                datetime.utcnow().isoformat()
-            )
-        )
-        return public_code
-
-
-def list_deep_audits(user_id: int) -> list[dict]:
-    with get_connection() as conn:
-        rows = conn.execute(
-            """
-            SELECT id, public_code, company_name, company_city, company_sector, client_reference,
-                   target_level, global_score, documents_score, environment_score,
-                   reen_score, plm_score, created_at
-            FROM deep_audits
-            WHERE user_id = ?
-            ORDER BY created_at DESC
-            """,
-            (user_id,)
-        ).fetchall()
-
-    return [dict(row) for row in rows]
-
-
-def get_deep_audit(user_id: int, audit_id: int) -> dict | None:
-    with get_connection() as conn:
-        row = conn.execute(
-            """
-            SELECT *
-            FROM deep_audits
-            WHERE id = ? AND user_id = ?
-            """,
-            (audit_id, user_id)
-        ).fetchone()
-
-    if row is None:
-        return None
-
-    data = dict(row)
-    data["data"] = json.loads(data["data_json"])
-    data["scores"] = json.loads(data["scores_json"])
-    return data
-
-
-def delete_deep_audit(user_id: int, audit_id: int) -> bool:
-    with get_connection() as conn:
-        cursor = conn.execute(
-            "DELETE FROM deep_audits WHERE id = ? AND user_id = ?",
             (audit_id, user_id)
         )
         return cursor.rowcount > 0

@@ -12,7 +12,7 @@ def render_fit_test():
     )
 
     if not st.session_state.workspace_created:
-        st.info("Vous pouvez réaliser ce test sans compte. Le diagnostic complet nécessite ensuite une connexion au démonstrateur.")
+        st.info("Ce test est optionnel. Il sert à vérifier si le cas se prête au prototype avant de lancer le diagnostic complet.")
 
     taille = st.selectbox(
         "Taille de l’entreprise",
@@ -72,25 +72,7 @@ def render_fit_test():
 
     if st.session_state.fit_test_done:
         st.markdown("<div class='fit-next-spacer'></div>", unsafe_allow_html=True)
-        if st.session_state.authenticated:
-            if st.button("Continuer vers le diagnostic avancé"):
-                st.session_state.page = "Diagnostic avancé"
-                st.query_params["page"] = "Diagnostic avancé"
-                st.rerun()
-        else:
-            st.markdown("""
-            <div class='card'>
-                <div class='section-title'>Étape suivante</div>
-                <div class='feature-title'>Diagnostic avancé accessible dans l’espace de démonstration</div>
-                <div class='feature-text'>
-                    Vous pouvez utiliser le résultat du test rapide sans compte. Pour enregistrer un dossier,
-                    accéder au questionnaire complet et générer un rapport de travail, connectez-vous au démonstrateur.
-                </div>
-            </div>
-            """, unsafe_allow_html=True)
-
-            st.markdown("<div class='button-spacer'></div>", unsafe_allow_html=True)
-            if st.button("Créer un compte / se connecter"):
-                st.session_state.page = "Connexion"
-                st.query_params["page"] = "Connexion"
-                st.rerun()
+        if st.button("Continuer vers le diagnostic avancé", use_container_width=True):
+            st.session_state.page = "Diagnostic avancé"
+            st.query_params["page"] = "Diagnostic avancé"
+            st.rerun()
