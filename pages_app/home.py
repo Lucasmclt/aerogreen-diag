@@ -49,7 +49,7 @@ def render_home():
     """, unsafe_allow_html=True)
 
     st.markdown("""
-    <div class='card-soft' style='border:1px solid rgba(245,158,11,.28); background:rgba(255,251,235,.72);'>
+    <div class='card-soft' style='margin-top:1.35rem; border:1px solid rgba(245,158,11,.28); background:rgba(255,251,235,.72);'>
         <div class='section-title'>Prototype portfolio — non officiel</div>
         <strong>Pré-diagnostic indicatif, pas audit ni certification.</strong>
         <div class='feature-text'>

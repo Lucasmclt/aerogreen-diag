@@ -107,8 +107,3 @@ def render_methodology():
     </div>
     """, unsafe_allow_html=True)
 
-    st.markdown("## Pourquoi cette limite rend le projet plus crédible")
-    st.info(
-        "Un recruteur ou un manager produit doit comprendre que le projet n’essaie pas de simuler une expertise réglementaire. "
-        "Il montre une capacité à cadrer un problème B2B, structurer une grille d’analyse, produire un livrable et assumer les limites."
-    )
