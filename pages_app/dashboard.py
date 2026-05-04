@@ -12,7 +12,13 @@ from services.calculations import (
     compute_advanced_score,
 )
 from services.database import list_audits, delete_audit
-from pages_app.case_study import CASE_STUDY_COMPANY, CASE_STUDY_INPUTS, _load_case_study_in_session
+from pages_app.case_study import CASE_STUDY_INPUTS, _load_case_study_in_session
+
+
+def _go_to(page: str) -> None:
+    st.session_state.page = page
+    st.query_params["page"] = page
+    st.rerun()
 
 
 def _clear_deleted_diagnostic_session(public_code: str):
@@ -61,26 +67,26 @@ def _render_active_diagnostic():
         st.markdown("""
         <div class='card-soft section-intro-card' style='border:1px solid rgba(99,102,241,.22);'>
             <div class='section-title'>Point de départ</div>
-            <strong>Aucun diagnostic actif dans la session.</strong>
+            <strong>Aucun diagnostic chargé. Lancez un diagnostic ou chargez le cas d’étude fictif.</strong>
             <div class='feature-text'>
-                Le dashboard ne cache rien : aucun score ne peut être affiché tant qu’un diagnostic n’a pas été lancé
-                ou qu’un cas d’étude fictif n’a pas été chargé.
+                Pour une démo portfolio en moins de 3 minutes, commencez par le cas d’étude fictif : il alimente directement
+                le dashboard, le score et le rapport sans demander de saisie complète.
             </div>
         </div>
         """, unsafe_allow_html=True)
-        col_start, col_case = st.columns(2)
-        with col_start:
-            if st.button("Lancer un diagnostic", key="dashboard_active_start", use_container_width=True):
-                st.session_state.page = "Diagnostic avancé"
-                st.query_params["page"] = "Diagnostic avancé"
-                st.rerun()
+        col_case, col_load, col_start = st.columns(3)
         with col_case:
-            if st.button("Charger le cas d’étude exemple", key="dashboard_active_case", use_container_width=True):
+            if st.button("Aller au cas d’étude fictif", key="dashboard_active_case_page", use_container_width=True):
+                _go_to("Cas d’étude fictif")
+        with col_load:
+            if st.button("Charger le cas fictif", key="dashboard_active_load_case", use_container_width=True):
                 result = compute_advanced_score(CASE_STUDY_INPUTS)
                 _load_case_study_in_session(result)
-                st.session_state.page = "Dashboard"
-                st.query_params["page"] = "Dashboard"
+                st.success("Cas d’étude chargé. Vous pouvez maintenant consulter le dashboard.")
                 st.rerun()
+        with col_start:
+            if st.button("Lancer un diagnostic", key="dashboard_active_start", use_container_width=True):
+                _go_to("Diagnostic avancé")
         return
 
     result = st.session_state.diagnostic_result
@@ -91,13 +97,15 @@ def _render_active_diagnostic():
     strengths = build_strengths(inputs, result)
     weaknesses = build_weaknesses(inputs, result)
 
+    diagnostic_type = "Cas d’étude fictif" if st.session_state.get("client_reference") == "CAS-FICTIF-AERO-01" else "Diagnostic avancé saisi"
+
     st.markdown(f"""
     <div class='card'>
         <div class='section-title'>Diagnostic affiché</div>
         <div class='feature-title'>{_active_company_label()}</div>
         <div class='feature-text'>
-            Ce dashboard affiche le diagnostic actuellement chargé dans la session. Il peut s’agir d’un cas fictif
-            ou d’un diagnostic saisi dans le questionnaire. Le score est une grille de maturité indicative, pas une conformité.
+            Type de diagnostic : <strong>{diagnostic_type}</strong>. Ce dashboard affiche le diagnostic actuellement chargé
+            dans la session. Le score est une grille de maturité indicative, pas une conformité.
         </div>
     </div>
     """, unsafe_allow_html=True)
@@ -144,14 +152,10 @@ def _render_active_diagnostic():
     with cta1:
         if st.button("Générer / télécharger le rapport", key="dashboard_to_report", use_container_width=True):
             target_page = "Rapport" if st.session_state.get("current_audit_public_code") else "Score"
-            st.session_state.page = target_page
-            st.query_params["page"] = target_page
-            st.rerun()
+            _go_to(target_page)
     with cta2:
         if st.button("Modifier / relancer le diagnostic", key="dashboard_to_diag", use_container_width=True):
-            st.session_state.page = "Diagnostic avancé"
-            st.query_params["page"] = "Diagnostic avancé"
-            st.rerun()
+            _go_to("Diagnostic avancé")
 
 
 def render_dashboard():

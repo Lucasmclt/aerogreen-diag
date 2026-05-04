@@ -94,32 +94,32 @@ def render_process_timeline():
         <div class='timeline-step'>
             <div class='timeline-dot'>1</div>
             <div>
-                <strong>Test rapide</strong>
-                <p>Qualification immédiate sans compte.</p>
+                <strong>Cas d’étude fictif</strong>
+                <p>Comprendre le projet immédiatement sans remplir le questionnaire.</p>
             </div>
         </div>
         <div class='timeline-line'></div>
         <div class='timeline-step'>
             <div class='timeline-dot'>2</div>
             <div>
-                <strong>Cas d’étude</strong>
-                <p>Chargement d’un exemple fictif pour comprendre le parcours sans friction.</p>
+                <strong>Dashboard</strong>
+                <p>Afficher le score, les priorités, les preuves manquantes et les recommandations.</p>
             </div>
         </div>
         <div class='timeline-line'></div>
         <div class='timeline-step'>
             <div class='timeline-dot'>3</div>
             <div>
-                <strong>Pré-diagnostic guidé</strong>
-                <p>Collecte déclarative : matériel, PLM, cloud, gouvernance et achats IT.</p>
+                <strong>Score puis rapport</strong>
+                <p>Lire le diagnostic, enregistrer le cas et produire le PDF exploratoire.</p>
             </div>
         </div>
         <div class='timeline-line'></div>
         <div class='timeline-step'>
             <div class='timeline-dot'>4</div>
             <div>
-                <strong>Rapport exploratoire</strong>
-                <p>Score indicatif, recommandations non officielles et PDF de travail.</p>
+                <strong>Méthodologie & limites</strong>
+                <p>Assumer clairement le cadre portfolio, les limites et le caractère non officiel.</p>
             </div>
         </div>
     </div>

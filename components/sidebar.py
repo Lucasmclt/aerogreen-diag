@@ -5,13 +5,13 @@ from services.calculations import get_fit_result, get_grade
 
 NAV_PAGES = [
     ("Accueil", "Accueil"),
-    ("Test rapide", "Test rapide"),
+    ("Cas d’étude fictif", "Cas d’étude fictif"),
     ("Dashboard", "Dashboard"),
     ("Diagnostic avancé", "Diagnostic avancé"),
     ("Score", "Score"),
     ("Rapport", "Rapport"),
-    ("Cas d’étude fictif", "Cas d’étude fictif"),
     ("Méthodologie & limites", "Méthodologie & limites"),
+    ("Test rapide", "Test rapide"),
 ]
 
 

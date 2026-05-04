@@ -23,8 +23,8 @@ def render_home():
                 en outil numérique compréhensible, avec diagnostic indicatif, preuves, rapport et limites assumées.
             </p>
             <div class="hero-cta-row">
-                <a class="hero-cta primary" href="?page=Cas%20d%E2%80%99%C3%A9tude%20fictif" target="_self">Voir le cas d’étude</a>
-                <a class="hero-cta secondary" href="?page=M%C3%A9thodologie%20%26%20limites" target="_self">Voir la méthodologie</a>
+                <a class="hero-cta primary" href="?page=Cas%20d%E2%80%99%C3%A9tude%20fictif" target="_self">Tester avec le cas fictif</a>
+                <a class="hero-cta secondary" href="?page=Diagnostic%20avanc%C3%A9" target="_self">Remplir le diagnostic</a>
             </div>
         </div>
         <div class='hero-visual'>
@@ -57,16 +57,21 @@ def render_home():
             aide à identifier des zones faibles et génère un rapport de travail. Les résultats ne remplacent ni EcoVadis,
             ni un bilan GES, ni un consultant RSE, ni une validation réglementaire.
         </div>
+        <br>
+        <div class='feature-text'>
+            Pour une lecture portfolio rapide, commencez par le cas d’étude fictif : il charge une PME industrielle simulée
+            et permet de tester immédiatement le dashboard, le score et le rapport PDF sans remplir tout le questionnaire.
+        </div>
     </div>
     """, unsafe_allow_html=True)
 
     cta1, cta2, cta3 = st.columns(3)
     with cta1:
+        if st.button("Voir le cas d’étude fictif", key="home_case_study", use_container_width=True):
+            _go_to("Cas d’étude fictif")
+    with cta2:
         if st.button("Lancer le diagnostic", key="home_start_diagnostic", use_container_width=True):
             _go_to("Diagnostic avancé")
-    with cta2:
-        if st.button("Voir un cas fictif", key="home_case_study", use_container_width=True):
-            _go_to("Cas d’étude fictif")
     with cta3:
         if st.button("Méthodologie & limites", key="home_methodology", use_container_width=True):
             _go_to("Méthodologie & limites")

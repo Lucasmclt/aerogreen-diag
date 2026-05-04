@@ -22,13 +22,13 @@ st.set_page_config(
 
 VALID_PAGES = [
     "Accueil",
-    "Test rapide",
+    "Cas d’étude fictif",
     "Dashboard",
     "Diagnostic avancé",
     "Score",
     "Rapport",
     "Méthodologie & limites",
-    "Cas d’étude fictif",
+    "Test rapide",
 ]
 
 DEMO_EMAIL = "demo@aerogreen.local"
@@ -60,6 +60,9 @@ def init_session_state():
 
         # Report
         "report_ready": False,
+
+        # Parcours portfolio
+        "case_study_loaded": False,
         "last_saved_diagnostic_key": "",
         "last_saved_diagnostic_id": None,
         "current_audit_public_code": "",
@@ -103,8 +106,8 @@ def main():
 
     if page == "Accueil":
         render_home()
-    elif page == "Test rapide":
-        render_fit_test()
+    elif page == "Cas d’étude fictif":
+        render_case_study()
     elif page == "Dashboard":
         render_dashboard()
     elif page == "Diagnostic avancé":
@@ -115,8 +118,8 @@ def main():
         render_report()
     elif page == "Méthodologie & limites":
         render_methodology()
-    elif page == "Cas d’étude fictif":
-        render_case_study()
+    elif page == "Test rapide":
+        render_fit_test()
     else:
         st.session_state.page = "Accueil"
         render_home()

@@ -7,6 +7,12 @@ from services.pdf_generator import create_working_report_pdf_bytes
 from services.database import list_audits, get_audit_by_public_code
 
 
+def _go_to(page: str) -> None:
+    st.session_state.page = page
+    st.query_params["page"] = page
+    st.rerun()
+
+
 def render_report():
     render_page_header(
         "Rapport de travail",
@@ -17,18 +23,36 @@ def render_report():
     saved_audits = list_audits(st.session_state.user_id) if st.session_state.authenticated else []
 
     if not saved_audits:
-        st.warning("Aucun pré-diagnostic enregistré n’est disponible pour générer un rapport de travail.")
         if st.session_state.get("diagnostic_done") and st.session_state.get("diagnostic_result"):
-            st.info("Un diagnostic est actif dans la session. Passez par la page Score pour l’enregistrer, puis revenez télécharger le PDF.")
-            target_label = "Enregistrer depuis la page Score"
-            target_page = "Score"
+            st.markdown("""
+            <div class='card-soft section-intro-card' style='border:1px solid rgba(99,102,241,.22);'>
+                <div class='section-title'>Rapport pas encore enregistré</div>
+                <strong>Un diagnostic est actif, mais aucun rapport PDF n’est encore disponible.</strong>
+                <div class='feature-text'>
+                    Passez par la page Score pour enregistrer le diagnostic, puis le rapport PDF pourra être généré.
+                </div>
+            </div>
+            """, unsafe_allow_html=True)
+            if st.button("Enregistrer depuis la page Score", key="report_no_saved_score", use_container_width=True):
+                _go_to("Score")
         else:
-            target_label = "Lancer le diagnostic guidé"
-            target_page = "Diagnostic avancé"
-        if st.button(target_label, use_container_width=True):
-            st.session_state.page = target_page
-            st.query_params["page"] = target_page
-            st.rerun()
+            st.markdown("""
+            <div class='card-soft section-intro-card' style='border:1px solid rgba(99,102,241,.22);'>
+                <div class='section-title'>Aucun rapport disponible</div>
+                <strong>Aucun diagnostic chargé. Lancez un diagnostic ou chargez le cas d’étude fictif.</strong>
+                <div class='feature-text'>
+                    Pour vérifier le parcours PDF rapidement, chargez le cas d’étude fictif, consultez le dashboard, puis enregistrez
+                    le diagnostic depuis la page Score.
+                </div>
+            </div>
+            """, unsafe_allow_html=True)
+            c1, c2 = st.columns(2)
+            with c1:
+                if st.button("Aller au cas d’étude fictif", key="report_no_diag_case", use_container_width=True):
+                    _go_to("Cas d’étude fictif")
+            with c2:
+                if st.button("Lancer le diagnostic guidé", key="report_no_diag_start", use_container_width=True):
+                    _go_to("Diagnostic avancé")
         return
 
     audit_options = {

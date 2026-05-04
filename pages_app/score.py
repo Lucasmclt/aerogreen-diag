@@ -16,6 +16,12 @@ from services.calculations import (
 from services.database import save_audit, audit_public_code_exists
 
 
+def _go_to(page: str) -> None:
+    st.session_state.page = page
+    st.query_params["page"] = page
+    st.rerun()
+
+
 def _diagnostic_signature(inputs, result):
     payload = {
         "inputs": inputs,
@@ -43,9 +49,7 @@ def _ensure_company_info_before_save() -> bool:
     st.error("Impossible d’enregistrer : informations du dossier obligatoires manquantes — " + ", ".join(missing) + ".")
     if st.button("Compléter les informations du dossier", key="score_complete_company_info", use_container_width=True):
         st.session_state.wizard_step = 1
-        st.session_state.page = "Diagnostic avancé"
-        st.query_params["page"] = "Diagnostic avancé"
-        st.rerun()
+        _go_to("Diagnostic avancé")
     return False
 
 
@@ -105,18 +109,23 @@ def render_score():
     """, unsafe_allow_html=True)
 
     if not st.session_state.diagnostic_done or not st.session_state.diagnostic_result:
-        st.warning("Aucun diagnostic avancé n’a encore été calculé.")
+        st.markdown("""
+        <div class='card-soft section-intro-card' style='border:1px solid rgba(99,102,241,.22);'>
+            <div class='section-title'>Aucun score disponible</div>
+            <strong>Aucun diagnostic chargé. Lancez un diagnostic ou chargez le cas d’étude fictif.</strong>
+            <div class='feature-text'>
+                La page Score dépend d’un diagnostic actif. Pour la démo portfolio, le chemin le plus rapide est de charger
+                le cas d’étude fictif, puis de revenir ici depuis le dashboard.
+            </div>
+        </div>
+        """, unsafe_allow_html=True)
         c1, c2 = st.columns(2)
         with c1:
-            if st.button("Lancer le diagnostic avancé", use_container_width=True):
-                st.session_state.page = "Diagnostic avancé"
-                st.query_params["page"] = "Diagnostic avancé"
-                st.rerun()
+            if st.button("Aller au cas d’étude fictif", key="score_no_diag_case", use_container_width=True):
+                _go_to("Cas d’étude fictif")
         with c2:
-            if st.button("Voir le cas d’étude fictif", use_container_width=True):
-                st.session_state.page = "Cas d’étude fictif"
-                st.query_params["page"] = "Cas d’étude fictif"
-                st.rerun()
+            if st.button("Lancer le diagnostic avancé", key="score_no_diag_start", use_container_width=True):
+                _go_to("Diagnostic avancé")
         return
 
     result = st.session_state.diagnostic_result
@@ -194,11 +203,7 @@ def render_score():
                 audit_id = _save_current_diagnostic_if_needed(result)
                 if not audit_id:
                     return
-                st.session_state.page = "Rapport"
-                st.query_params["page"] = "Rapport"
-                st.rerun()
+                _go_to("Rapport")
         with cta3:
             if st.button("Retour dashboard", use_container_width=True):
-                st.session_state.page = "Dashboard"
-                st.query_params["page"] = "Dashboard"
-                st.rerun()
+                _go_to("Dashboard")

@@ -54,6 +54,12 @@ CASE_STUDY_INPUTS = {
 }
 
 
+def _go_to(page: str) -> None:
+    st.session_state.page = page
+    st.query_params["page"] = page
+    st.rerun()
+
+
 def _load_case_study_in_session(result: dict):
     st.session_state.workspace_created = True
     st.session_state.company_name = CASE_STUDY_COMPANY["company_name"]
@@ -68,6 +74,7 @@ def _load_case_study_in_session(result: dict):
     st.session_state.current_audit_public_code = ""
     st.session_state.last_saved_diagnostic_key = ""
     st.session_state.last_saved_diagnostic_id = None
+    st.session_state.case_study_loaded = True
 
 
 def render_case_study():
@@ -94,6 +101,11 @@ def render_case_study():
         </div>
     </div>
     """, unsafe_allow_html=True)
+
+    if st.session_state.get("case_study_loaded"):
+        st.success("Cas d’étude chargé. Vous pouvez maintenant consulter le dashboard.")
+        if st.button("Aller au Dashboard", key="case_loaded_go_dashboard", use_container_width=True):
+            _go_to("Dashboard")
 
     st.markdown("## Contexte simulé")
     st.markdown("""
@@ -168,15 +180,16 @@ def render_case_study():
     </div>
     """, unsafe_allow_html=True)
 
-    cta1, cta2 = st.columns(2)
+    cta1, cta2, cta3 = st.columns(3)
     with cta1:
-        if st.button("Lancer mon propre diagnostic", key="case_start_real_diag", use_container_width=True):
-            st.session_state.page = "Diagnostic avancé"
-            st.query_params["page"] = "Diagnostic avancé"
-            st.rerun()
-    with cta2:
         if st.button("Charger ce cas dans la session", key="case_load_score", use_container_width=True):
             _load_case_study_in_session(result)
-            st.session_state.page = "Dashboard"
-            st.query_params["page"] = "Dashboard"
             st.rerun()
+    with cta2:
+        if st.button("Voir le Dashboard", key="case_go_dashboard", use_container_width=True):
+            if not st.session_state.get("diagnostic_done") or not st.session_state.get("diagnostic_result"):
+                _load_case_study_in_session(result)
+            _go_to("Dashboard")
+    with cta3:
+        if st.button("Lancer mon propre diagnostic", key="case_start_real_diag", use_container_width=True):
+            _go_to("Diagnostic avancé")
